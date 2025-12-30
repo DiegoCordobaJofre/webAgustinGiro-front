@@ -1,0 +1,141 @@
+.project-detail {
+  padding-top: 120px;
+  padding-bottom: var(--spacing-xl);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: var(--spacing-md);
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  transition: color var(--transition-base);
+  
+  &:hover {
+    color: var(--color-text);
+  }
+}
+
+.project-detail__header {
+  margin-bottom: var(--spacing-lg);
+  
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  &__meta {
+    display: flex;
+    gap: var(--spacing-md);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-light);
+  }
+}
+
+.project-detail__gallery {
+  margin-bottom: var(--spacing-lg);
+}
+
+.gallery-main {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  margin-bottom: var(--spacing-md);
+  overflow: hidden;
+  background: var(--color-accent);
+  
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 50px;
+  height: 50px;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background var(--transition-base);
+  z-index: 10;
+  
+  &:hover {
+    background: var(--color-white);
+  }
+  
+  &--prev {
+    left: var(--spacing-sm);
+  }
+  
+  &--next {
+    right: var(--spacing-sm);
+  }
+}
+
+.gallery-thumbnails {
+  display: flex;
+  gap: var(--spacing-sm);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-xs);
+}
+
+.gallery-thumbnail {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color var(--transition-base);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  &--active {
+    border-color: var(--color-primary);
+  }
+  
+  &:hover {
+    border-color: var(--color-text-light);
+  }
+}
+
+.project-detail__description {
+  max-width: 800px;
+  margin: 0 auto;
+  
+  p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--color-text);
+  }
+}
+
+.loading {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-text-light);
+}
+
+@media (max-width: 768px) {
+  .gallery-main {
+    height: 400px;
+  }
+  
+  .project-detail__header__title {
+    font-size: 1.8rem;
+  }
+}
+
+

@@ -1,0 +1,126 @@
+<div class="project-form-page">
+  <div class="container">
+    <div class="project-form-container">
+      <div class="project-form__header">
+        <h1>{{ isEditMode ? 'Editar Proyecto' : 'Nuevo Proyecto' }}</h1>
+        <a routerLink="/admin/dashboard" class="btn">Cancelar</a>
+      </div>
+      
+      <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="project-form">
+        <div class="form-group">
+          <label for="title">Título *</label>
+          <input 
+            type="text" 
+            id="title" 
+            formControlName="title"
+            class="form-input"
+            [class.error]="projectForm.get('title')?.invalid && projectForm.get('title')?.touched">
+        </div>
+        
+        <div class="form-group">
+          <label for="description">Descripción *</label>
+          <textarea 
+            id="description" 
+            formControlName="description"
+            class="form-input form-textarea"
+            rows="5"
+            [class.error]="projectForm.get('description')?.invalid && projectForm.get('description')?.touched"></textarea>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Categoría *</label>
+            <input 
+              type="text" 
+              id="category" 
+              formControlName="category"
+              class="form-input"
+              [class.error]="projectForm.get('category')?.invalid && projectForm.get('category')?.touched">
+          </div>
+          
+          <div class="form-group">
+            <label for="status">Estado *</label>
+            <select 
+              id="status" 
+              formControlName="status"
+              class="form-input">
+              <option *ngFor="let option of statusOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <div class="form-section__header">
+            <h3>Imágenes</h3>
+            <button type="button" class="btn btn--small" (click)="addNewImage()">Agregar Imagen</button>
+          </div>
+          
+          <div formArrayName="images" class="images-list">
+            <div 
+              *ngFor="let image of imagesFormArray.controls; let i = index" 
+              [formGroupName]="i"
+              class="image-item">
+              <div class="image-item__fields">
+                <div class="form-group">
+                  <label>URL de la imagen *</label>
+                  <input 
+                    type="text" 
+                    formControlName="url"
+                    class="form-input"
+                    placeholder="https://example.com/image.jpg">
+                </div>
+                
+                <div class="form-group">
+                  <label>Texto alternativo *</label>
+                  <input 
+                    type="text" 
+                    formControlName="alt"
+                    class="form-input"
+                    placeholder="Descripción de la imagen">
+                </div>
+                
+                <div class="form-group">
+                  <label>Orden</label>
+                  <input 
+                    type="number" 
+                    formControlName="order"
+                    class="form-input">
+                </div>
+                
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input 
+                      type="checkbox" 
+                      formControlName="isMain"
+                      (change)="setMainImage(i)">
+                    Imagen principal
+                  </label>
+                </div>
+              </div>
+              
+              <button 
+                type="button" 
+                class="btn btn--danger btn--small"
+                (click)="removeImage(i)">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn--primary"
+            [disabled]="projectForm.invalid || isLoading">
+            {{ isLoading ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Crear') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

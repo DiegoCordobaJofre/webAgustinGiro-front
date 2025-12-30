@@ -1,0 +1,52 @@
+<div class="dashboard">
+  <div class="dashboard__header">
+    <div class="container">
+      <div class="dashboard__header-content">
+        <h1>Panel de Administración</h1>
+        <div class="dashboard__actions">
+          <a routerLink="/admin/projects/new" class="btn btn--primary">Nuevo Proyecto</a>
+          <button class="btn" (click)="logout()">Cerrar Sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="dashboard__content">
+    <div class="container">
+      <h2>Proyectos</h2>
+      
+      <div class="projects-table" *ngIf="!isLoading; else loading">
+        <table>
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Categoría</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let project of projects">
+              <td>{{ project.title }}</td>
+              <td>{{ project.category }}</td>
+              <td>{{ project.status }}</td>
+              <td class="actions">
+                <a [routerLink]="['/admin/projects', project.id, 'edit']" class="btn-link">Editar</a>
+                <button class="btn-link btn-link--danger" (click)="deleteProject(project.id)">Eliminar</button>
+              </td>
+            </tr>
+            <tr *ngIf="projects.length === 0">
+              <td colspan="4" class="text-center">No hay proyectos</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <ng-template #loading>
+        <div class="loading">Cargando proyectos...</div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+

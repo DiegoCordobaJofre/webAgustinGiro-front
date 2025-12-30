@@ -1,0 +1,26 @@
+<header class="header">
+  <div class="container">
+    <nav class="nav">
+      <a routerLink="/" class="nav__logo" (click)="closeMenu()">
+        <img src="assets/logo.png" alt="Agustín Giro" class="nav__logo-img" *ngIf="logoExists; else textLogo">
+        <ng-template #textLogo>
+          <span>Agustín Giro</span>
+        </ng-template>
+      </a>
+      
+      <button class="nav__toggle" (click)="toggleMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <ul class="nav__menu" [class.nav__menu--open]="isMenuOpen">
+        <li><a routerLink="/proyectos" (click)="closeMenu()">Proyectos</a></li>
+        <li><a routerLink="/sobre" (click)="closeMenu()">Sobre</a></li>
+        <li><a routerLink="/contacto" (click)="closeMenu()">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+

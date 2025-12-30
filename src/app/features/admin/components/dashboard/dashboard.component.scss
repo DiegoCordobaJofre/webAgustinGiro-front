@@ -1,0 +1,129 @@
+.dashboard {
+  min-height: 100vh;
+  background: var(--color-accent);
+  padding-top: 80px;
+}
+
+.dashboard__header {
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-md) 0;
+  margin-bottom: var(--spacing-lg);
+}
+
+.dashboard__header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 400;
+    margin: 0;
+  }
+}
+
+.dashboard__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.dashboard__content {
+  h2 {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.5rem;
+    font-weight: 400;
+  }
+}
+
+.projects-table {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    background: var(--color-accent);
+    
+    th {
+      padding: var(--spacing-sm);
+      text-align: left;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid var(--color-border);
+    }
+  }
+  
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--color-border);
+      
+      &:hover {
+        background: var(--color-accent);
+      }
+      
+      td {
+        padding: var(--spacing-sm);
+      }
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  padding: 0;
+  
+  &:hover {
+    color: var(--color-text-light);
+  }
+  
+  &--danger {
+    color: #d32f2f;
+    
+    &:hover {
+      color: #b71c1c;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--color-text-light);
+}
+
+@media (max-width: 768px) {
+  .dashboard__header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .dashboard__actions {
+    width: 100%;
+    
+    .btn {
+      flex: 1;
+    }
+  }
+}
+
+

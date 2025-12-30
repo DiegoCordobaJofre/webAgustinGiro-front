@@ -1,0 +1,39 @@
+<section class="section projects-page">
+  <div class="container">
+    <h1 class="page-title">Proyectos</h1>
+    
+    <div class="filters" *ngIf="categories.length > 0">
+      <button 
+        class="filter-btn" 
+        [class.filter-btn--active]="selectedCategory === null"
+        (click)="filterByCategory(null)">
+        Todos
+      </button>
+      <button 
+        *ngFor="let category of categories"
+        class="filter-btn"
+        [class.filter-btn--active]="selectedCategory === category"
+        (click)="filterByCategory(category)">
+        {{ category }}
+      </button>
+    </div>
+    
+    <div class="projects-grid" *ngIf="!isLoading; else loading">
+      <article class="project-card" *ngFor="let project of getFilteredProjects()" [routerLink]="['/proyectos', project.id]">
+        <div class="project-card__image">
+          <img [src]="getMainImage(project)" [alt]="project.title" loading="lazy">
+        </div>
+        <div class="project-card__content">
+          <h3 class="project-card__title">{{ project.title }}</h3>
+          <span class="project-card__status">{{ getStatusLabel(project.status) }}</span>
+        </div>
+      </article>
+    </div>
+    
+    <ng-template #loading>
+      <div class="loading">Cargando proyectos...</div>
+    </ng-template>
+  </div>
+</section>
+
+

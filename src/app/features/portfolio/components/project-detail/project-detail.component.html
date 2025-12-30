@@ -1,0 +1,58 @@
+<div class="project-detail" *ngIf="!isLoading && project; else loading">
+  <div class="container">
+    <a routerLink="/proyectos" class="back-link">← Volver a proyectos</a>
+    
+    <div class="project-detail__header">
+      <h1 class="project-detail__title">{{ project.title }}</h1>
+      <div class="project-detail__meta">
+        <span class="project-detail__category">{{ project.category }}</span>
+        <span class="project-detail__status">{{ getStatusLabel(project.status) }}</span>
+      </div>
+    </div>
+    
+    <div class="project-detail__gallery" *ngIf="project.images && project.images.length > 0">
+      <div class="gallery-main">
+        <img 
+          [src]="project.images[currentImageIndex].url" 
+          [alt]="project.images[currentImageIndex].alt"
+          class="gallery-main__image">
+        <button 
+          class="gallery-nav gallery-nav--prev" 
+          (click)="previousImage()"
+          *ngIf="project.images.length > 1">
+          ‹
+        </button>
+        <button 
+          class="gallery-nav gallery-nav--next" 
+          (click)="nextImage()"
+          *ngIf="project.images.length > 1">
+          ›
+        </button>
+      </div>
+      
+      <div class="gallery-thumbnails" *ngIf="project.images.length > 1">
+        <button 
+          *ngFor="let image of project.images; let i = index"
+          class="gallery-thumbnail"
+          [class.gallery-thumbnail--active]="i === currentImageIndex"
+          (click)="goToImage(i)">
+          <img [src]="image.url" [alt]="image.alt">
+        </button>
+      </div>
+    </div>
+    
+    <div class="project-detail__description">
+      <p>{{ project.description }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading">
+    <div class="container">
+      <p>Cargando proyecto...</p>
+    </div>
+  </div>
+</ng-template>
+
+
