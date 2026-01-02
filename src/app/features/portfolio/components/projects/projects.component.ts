@@ -26,8 +26,9 @@ export class ProjectsComponent implements OnInit {
   private loadProjects(): void {
     this.projectService.getAll().subscribe({
       next: (projects) => {
-        this.projects = projects;
-        this.categories = [...new Set(projects.map(p => p.category))];
+        // Filtrar solo proyectos que deben mostrarse en el menú
+        this.projects = projects.filter(p => p.showInMenu !== false);
+        this.categories = [...new Set(this.projects.map(p => p.category))];
         this.isLoading = false;
       },
       error: () => {
@@ -62,5 +63,6 @@ export class ProjectsComponent implements OnInit {
     return mainImage?.url || project.images?.[0]?.url || '';
   }
 }
+
 
 

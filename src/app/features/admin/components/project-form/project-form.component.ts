@@ -36,6 +36,8 @@ export class ProjectFormComponent implements OnInit {
       description: ['', [Validators.required]],
       category: ['', [Validators.required]],
       status: [ProjectStatus.IN_EXECUTION, [Validators.required]],
+      featured: [false],
+      showInMenu: [true],
       images: this.fb.array([])
     });
   }
@@ -60,7 +62,9 @@ export class ProjectFormComponent implements OnInit {
           title: project.title,
           description: project.description,
           category: project.category,
-          status: project.status
+          status: project.status,
+          featured: project.featured ?? false,
+          showInMenu: project.showInMenu ?? true
         });
 
         if (project.images && project.images.length > 0) {
@@ -133,5 +137,6 @@ export class ProjectFormComponent implements OnInit {
     }
   }
 }
+
 
 

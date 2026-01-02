@@ -52,6 +52,25 @@
         </div>
         
         <div class="form-section">
+          <h3>Visibilidad</h3>
+          <div class="form-checkboxes">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="featured">
+              <span>Mostrar en página principal (carrusel)</span>
+            </label>
+            
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                formControlName="showInMenu">
+              <span>Mostrar en menú "Proyectos"</span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-section">
           <div class="form-section__header">
             <h3>Imágenes</h3>
             <button type="button" class="btn btn--small" (click)="addNewImage()">Agregar Imagen</button>
@@ -122,5 +141,6 @@
     </div>
   </div>
 </div>
+
 
 

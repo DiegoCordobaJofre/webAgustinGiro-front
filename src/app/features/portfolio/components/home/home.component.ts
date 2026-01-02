@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoading = true;
   private autoSlideInterval: any;
 
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService) { }
 
   ngOnInit(): void {
     this.loadFeaturedProjects();
@@ -44,9 +44,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.projectService.getAll().subscribe({
       next: (projects) => {
         this.featuredProjects = projects;
-        if (projects.length > 0) {
-          // Usar proyectos reales del backend
-          this.carouselProjects = projects.slice(0, 3).map((p, index) => ({
+        // Filtrar solo proyectos destacados (featured)
+        const featuredProjects = projects.filter(p => p.featured);
+
+        if (featuredProjects.length > 0) {
+          // Usar proyectos reales del backend que estén marcados como featured
+          this.carouselProjects = featuredProjects.slice(0, 3).map((p, index) => ({
             id: p.id || index + 1,
             title: p.title,
             description: p.description,
@@ -73,27 +76,35 @@ export class HomeComponent implements OnInit, OnDestroy {
       {
         id: 1,
         title: 'Casa Algarve',
-        description: 'Villa moderna con piscina y vistas al mar. Diseño contemporáneo que integra espacios interiores y exteriores.',
+        description: 'Villa moderna. Diseño contemporáneo que integra espacios interiores y exteriores.',
         category: 'Arquitectura',
         status: 'En ejecución',
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
       },
       {
         id: 2,
-        title: 'Residencia Tavira',
+        title: 'Residencia Giró',
         description: 'Casa tradicional portuguesa renovada con materiales locales. Patio interior y azulejos característicos del Algarve.',
         category: 'Arquitectura',
         status: 'Completado',
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg',
       },
       {
         id: 3,
-        title: 'Villa Lagos',
-        description: 'Proyecto residencial de lujo con arquitectura bioclimática. Integración con el paisaje natural del sur de Portugal.',
+        title: 'Villa Camila Tyson',
+        description: 'Proyecto residencial con materiales locales. Integración con el paisaje natural del sur de Portugal.',
         category: 'Arquitectura',
         status: 'En ejecución',
-        image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80'
-      }
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-5.jpg'
+      },
+      {
+        id: 4,
+        title: 'Casa Ostra',
+        description: 'Casa tradicional italiana.',
+        category: 'Arquitectura',
+        status: 'En ejecución',
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
+      },
     ];
   }
 
@@ -109,8 +120,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   previousSlide(): void {
-    this.currentSlide = this.currentSlide === 0 
-      ? this.carouselProjects.length - 1 
+    this.currentSlide = this.currentSlide === 0
+      ? this.carouselProjects.length - 1
       : this.currentSlide - 1;
   }
 

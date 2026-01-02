@@ -18,3 +18,8 @@ Esta imagen se mostrará como banner principal en la página de inicio. Recomend
 ## Proyectos
 Las imágenes de los proyectos se gestionan desde el panel de administración (`/admin/dashboard`). Puedes subir imágenes directamente desde allí cuando el backend esté configurado.
 
+
+
+
+
+

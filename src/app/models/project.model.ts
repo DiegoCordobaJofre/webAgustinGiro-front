@@ -5,6 +5,8 @@ export interface Project {
   category: string;
   status: ProjectStatus;
   images: ProjectImage[];
+  featured?: boolean; // Aparece en el carrusel de la página principal
+  showInMenu?: boolean; // Aparece en la lista de proyectos
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -30,6 +32,8 @@ export interface ProjectCreateDto {
   category: string;
   status: ProjectStatus;
   images: ProjectImageCreateDto[];
+  featured?: boolean;
+  showInMenu?: boolean;
 }
 
 export interface ProjectImageCreateDto {
@@ -45,6 +49,9 @@ export interface ProjectUpdateDto {
   category?: string;
   status?: ProjectStatus;
   images?: ProjectImageCreateDto[];
+  featured?: boolean;
+  showInMenu?: boolean;
 }
+
 
 

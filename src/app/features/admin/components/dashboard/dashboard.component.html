@@ -2,9 +2,12 @@
   <div class="dashboard__header">
     <div class="container">
       <div class="dashboard__header-content">
-        <h1>Panel de Administración</h1>
+        <div>
+          <h1>Panel de Administración</h1>
+          <p class="dashboard__subtitle">Gestiona tus proyectos</p>
+        </div>
         <div class="dashboard__actions">
-          <a routerLink="/admin/projects/new" class="btn btn--primary">Nuevo Proyecto</a>
+          <a routerLink="/admin/projects/new" class="btn btn--primary">+ Nuevo Proyecto</a>
           <button class="btn" (click)="logout()">Cerrar Sesión</button>
         </div>
       </div>
@@ -13,30 +16,74 @@
   
   <div class="dashboard__content">
     <div class="container">
-      <h2>Proyectos</h2>
+      <div class="dashboard__stats">
+        <div class="stat-card">
+          <span class="stat-card__number">{{ projects.length }}</span>
+          <span class="stat-card__label">Total Proyectos</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__number">{{ featuredCount }}</span>
+          <span class="stat-card__label">En Página Principal</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__number">{{ menuCount }}</span>
+          <span class="stat-card__label">En Menú Proyectos</span>
+        </div>
+      </div>
       
-      <div class="projects-table" *ngIf="!isLoading; else loading">
-        <table>
+      <div class="projects-table-wrapper" *ngIf="!isLoading; else loading">
+        <table class="projects-table">
           <thead>
             <tr>
+              <th>Imagen</th>
               <th>Título</th>
               <th>Categoría</th>
               <th>Estado</th>
+              <th>Página Principal</th>
+              <th>Menú Proyectos</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let project of projects">
-              <td>{{ project.title }}</td>
+              <td class="project-image">
+                <img 
+                  [src]="getProjectImage(project)" 
+                  [alt]="project.title"
+                  class="project-thumbnail">
+              </td>
+              <td class="project-title">{{ project.title }}</td>
               <td>{{ project.category }}</td>
-              <td>{{ project.status }}</td>
+              <td>
+                <span class="status-badge" [class.status-badge--active]="project.status === 'IN_EXECUTION'">
+                  {{ getStatusLabel(project.status) }}
+                </span>
+              </td>
+              <td>
+                <button 
+                  class="toggle-btn"
+                  [class.toggle-btn--active]="project.featured"
+                  (click)="toggleFeatured(project)"
+                  [title]="project.featured ? 'Ocultar de página principal' : 'Mostrar en página principal'">
+                  {{ project.featured ? '✓' : '✗' }}
+                </button>
+              </td>
+              <td>
+                <button 
+                  class="toggle-btn"
+                  [class.toggle-btn--active]="project.showInMenu"
+                  (click)="toggleShowInMenu(project)"
+                  [title]="project.showInMenu ? 'Ocultar del menú' : 'Mostrar en menú'">
+                  {{ project.showInMenu ? '✓' : '✗' }}
+                </button>
+              </td>
               <td class="actions">
                 <a [routerLink]="['/admin/projects', project.id, 'edit']" class="btn-link">Editar</a>
                 <button class="btn-link btn-link--danger" (click)="deleteProject(project.id)">Eliminar</button>
               </td>
             </tr>
             <tr *ngIf="projects.length === 0">
-              <td colspan="4" class="text-center">No hay proyectos</td>
+              <td colspan="7" class="text-center">No hay proyectos. <a routerLink="/admin/projects/new">Crear uno nuevo</a></td>
             </tr>
           </tbody>
         </table>
@@ -48,5 +95,6 @@
     </div>
   </div>
 </div>
+
 
 

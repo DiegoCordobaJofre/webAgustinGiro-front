@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
@@ -19,7 +19,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -34,15 +35,17 @@ export class LoginComponent {
       
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
-          this.router.navigate(['/admin/dashboard']);
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin/dashboard';
+          this.router.navigate([returnUrl]);
         },
-        error: () => {
-          this.errorMessage = 'Credenciales incorrectas';
+        error: (error) => {
+          this.errorMessage = error?.error?.message || 'Credenciales incorrectas';
           this.isLoading = false;
         }
       });
     }
   }
 }
+
 
 

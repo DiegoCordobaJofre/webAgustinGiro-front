@@ -7,7 +7,7 @@
 .dashboard__header {
   background: var(--color-white);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-lg) 0;
   margin-bottom: var(--spacing-lg);
 }
 
@@ -19,10 +19,16 @@
   gap: var(--spacing-md);
   
   h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 400;
-    margin: 0;
+    margin: 0 0 var(--spacing-xs) 0;
   }
+}
+
+.dashboard__subtitle {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 .dashboard__actions {
@@ -31,55 +37,139 @@
 }
 
 .dashboard__content {
-  h2 {
-    margin-bottom: var(--spacing-md);
-    font-size: 1.5rem;
-    font-weight: 400;
+  padding-bottom: var(--spacing-xl);
+}
+
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.stat-card {
+  background: var(--color-white);
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-border);
+  text-align: center;
+  
+  &__number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  &__label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
   }
 }
 
-.projects-table {
+.projects-table-wrapper {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   overflow-x: auto;
 }
 
-table {
+.projects-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 1000px;
   
   thead {
     background: var(--color-accent);
     
     th {
-      padding: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
       text-align: left;
       font-weight: 500;
       text-transform: uppercase;
       font-size: 0.875rem;
       letter-spacing: 0.1em;
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 2px solid var(--color-border);
     }
   }
   
   tbody {
     tr {
       border-bottom: 1px solid var(--color-border);
+      transition: background var(--transition-base);
       
       &:hover {
         background: var(--color-accent);
       }
       
       td {
-        padding: var(--spacing-sm);
+        padding: var(--spacing-md);
+        vertical-align: middle;
       }
     }
+  }
+}
+
+.project-image {
+  width: 80px;
+  
+  .project-thumbnail {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+}
+
+.project-title {
+  font-weight: 500;
+  max-width: 200px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--color-accent);
+  color: var(--color-text);
+  
+  &--active {
+    background: #4caf50;
+    color: var(--color-white);
+  }
+}
+
+.toggle-btn {
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--color-border);
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--color-text-light);
+  transition: all var(--transition-base);
+  
+  &:hover {
+    border-color: var(--color-primary);
+  }
+  
+  &--active {
+    background: #4caf50;
+    border-color: #4caf50;
+    color: var(--color-white);
   }
 }
 
 .actions {
   display: flex;
   gap: var(--spacing-sm);
+  white-space: nowrap;
 }
 
 .btn-link {
@@ -107,8 +197,19 @@ table {
 
 .loading {
   text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-light);
+}
+
+.text-center {
+  text-align: center;
   padding: var(--spacing-lg);
   color: var(--color-text-light);
+  
+  a {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
 }
 
 @media (max-width: 768px) {
@@ -124,6 +225,11 @@ table {
       flex: 1;
     }
   }
+  
+  .dashboard__stats {
+    grid-template-columns: 1fr;
+  }
 }
+
 
 
