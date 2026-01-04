@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:vercel": "ng build --configuration vercel",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -36,6 +38,7 @@
     "typescript": "~5.2.2"
   }
 }
+
 
 
 

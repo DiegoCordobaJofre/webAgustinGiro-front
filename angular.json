@@ -31,8 +31,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "inlineFonts": false
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -48,7 +47,24 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "baseHref": "/webAgustinGiro-front/"
+            },
+            "vercel": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all",
+              "baseHref": "/"
             },
             "development": {
               "optimization": false,

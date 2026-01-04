@@ -15,6 +15,7 @@ export class ProjectDetailComponent implements OnInit {
   project: Project | null = null;
   isLoading = true;
   currentImageIndex = 0;
+  errorMessage = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -25,6 +26,9 @@ export class ProjectDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadProject(+id);
+    } else {
+      this.isLoading = false;
+      this.errorMessage = 'ID de proyecto no válido';
     }
   }
 
@@ -33,9 +37,12 @@ export class ProjectDetailComponent implements OnInit {
       next: (project) => {
         this.project = project;
         this.isLoading = false;
+        this.errorMessage = '';
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
+        this.errorMessage = 'No se pudo cargar el proyecto. Verifica que el backend esté corriendo y que el proyecto exista.';
+        console.error('Error al cargar proyecto:', error);
       }
     });
   }

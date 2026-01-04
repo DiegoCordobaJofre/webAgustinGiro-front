@@ -1,4 +1,4 @@
-<div class="project-detail" *ngIf="!isLoading && project; else loading">
+<div class="project-detail" *ngIf="!isLoading && project">
   <div class="container">
     <a routerLink="/proyectos" class="back-link">← Volver a proyectos</a>
     
@@ -47,13 +47,21 @@
   </div>
 </div>
 
-<ng-template #loading>
-  <div class="loading">
-    <div class="container">
-      <p>Cargando proyecto...</p>
+<div class="loading" *ngIf="isLoading">
+  <div class="container">
+    <p>Cargando proyecto...</p>
+  </div>
+</div>
+
+<div class="loading" *ngIf="!isLoading && !project">
+  <div class="container">
+    <div class="error-message">
+      <p *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p *ngIf="!errorMessage">Proyecto no encontrado</p>
+      <a routerLink="/proyectos" class="btn">Volver a proyectos</a>
     </div>
   </div>
-</ng-template>
+</div>
 
 
 

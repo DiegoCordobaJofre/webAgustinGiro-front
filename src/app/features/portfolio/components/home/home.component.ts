@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         if (featuredProjects.length > 0) {
           // Usar proyectos reales del backend que estén marcados como featured
-          this.carouselProjects = featuredProjects.slice(0, 3).map((p, index) => ({
+          this.carouselProjects = featuredProjects.slice(0, 5).map((p, index) => ({
             id: p.id || index + 1,
             title: p.title,
             description: p.description,
@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image
           }));
         } else {
-          // Proyectos de ejemplo con imágenes de casas portuguesas
+          // Proyectos de ejemplo con imágenes de casas
           this.carouselProjects = this.getExampleProjects();
         }
         this.isLoading = false;
@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         description: 'Casa tradicional italiana.',
         category: 'Arquitectura',
         status: 'En ejecución',
-        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/cocina-ostra-1.jpg'
       },
     ];
   }

@@ -126,6 +126,25 @@
   padding: var(--spacing-xl);
   text-align: center;
   color: var(--color-text-light);
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  text-align: center;
+  padding: var(--spacing-xl);
+  
+  p {
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.1rem;
+  }
+  
+  .btn {
+    margin-top: var(--spacing-sm);
+  }
 }
 
 @media (max-width: 768px) {
