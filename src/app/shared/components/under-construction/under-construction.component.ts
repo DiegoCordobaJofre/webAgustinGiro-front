@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./under-construction.component.scss']
 })
 export class UnderConstructionComponent {
-  phone = '+351927688101';
+  phone = '+351 927 688 101';
   email = 'agustinezequielgiro@gmail.com';
 }
 
