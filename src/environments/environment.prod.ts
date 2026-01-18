@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://www.agustingiro.com'
+  apiUrl: 'https://webagustingiro-back-production.up.railway.app/api'
 };
 
 

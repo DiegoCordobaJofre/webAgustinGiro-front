@@ -11,7 +11,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  // Para otras peticiones, agregar el token
+  // NO agregar token para GET públicos de proyectos (portfolio público)
+  // Los GET a /api/projects son públicos, pero POST/PUT/DELETE requieren autenticación
+  if (req.method === 'GET' && req.url.includes('/api/projects')) {
+    return next(req);
+  }
+
+  // Para otras peticiones (POST, PUT, DELETE, etc.), agregar el token
   const token = authService.getToken();
   if (token) {
     req = req.clone({
