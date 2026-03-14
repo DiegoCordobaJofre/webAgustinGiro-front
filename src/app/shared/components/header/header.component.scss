@@ -6,7 +6,7 @@
   background: var(--color-white);
   border-bottom: 1px solid var(--color-border);
   z-index: 1000;
-  padding: 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .nav {
@@ -17,42 +17,30 @@
   &__logo {
     display: flex;
     align-items: center;
-    padding: 0;
     font-size: 1.2rem;
     font-weight: 500;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    text-decoration: none;
-    color: var(--color-text);
-    background: var(--color-white);
-
+    
     &:hover {
       color: var(--color-text);
     }
   }
-
-  &__logo-text {
-    white-space: nowrap;
-  }
   
   &__logo-img {
-    height: 80px;
+    height: 40px;
     width: auto;
-    padding: 0;
-    margin: 0;
     object-fit: contain;
-    display: block;
-    vertical-align: middle;
   }
   
   &__toggle {
     display: none;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.15rem;
+    padding: 0.5rem;
     
     span {
       width: 24px;
@@ -65,7 +53,7 @@
   &__menu {
     display: flex;
     list-style: none;
-    gap: 0.75rem;
+    gap: var(--spacing-md);
     margin: 0;
     padding: 0;
     
@@ -73,7 +61,7 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      padding: 0;
+      padding: 0.5rem 0;
       position: relative;
       
       &::after {
@@ -93,17 +81,18 @@
       }
     }
   }
-  
+
+  // Selector de idioma (añadido)
   &__lang {
     position: relative;
-    margin-left: 0.25rem;
+    margin-left: var(--spacing-md);
   }
 
   &__lang-trigger {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.2rem 0.35rem;
+    gap: 0.35rem;
+    padding: 0.4rem 0.6rem;
     background: none;
     border: 1px solid var(--color-border);
     border-radius: 4px;
@@ -171,7 +160,7 @@
   &__lang-option {
     display: block;
     width: 100%;
-    padding: 0.25rem 0.4rem;
+    padding: 0.5rem 0.75rem;
     text-align: left;
     border: none;
     background: none;
@@ -189,65 +178,37 @@
       color: var(--color-primary);
     }
   }
-
+  
   @media (max-width: 768px) {
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    &__logo {
-      display: flex;
-    }
-
-    &__logo-img {
-      height: 80px;
-    }
-
     &__toggle {
       display: flex;
-      order: 1;
     }
-
+    
     &__menu {
-      display: none;
-      order: 3;
-      flex-basis: 100%;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
       flex-direction: column;
-      gap: 0;
-      padding: 0.5rem 0;
       background: var(--color-white);
-      border-top: 1px solid var(--color-border);
-
-      a {
-        display: block;
-        padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-base), padding var(--transition-base);
+      
+      &--open {
+        max-height: 300px;
+        padding: var(--spacing-sm) var(--spacing-md);
+      }
+      
+      li {
+        padding: var(--spacing-xs) 0;
       }
     }
 
-    &__menu--open {
-      display: flex;
-    }
-
     &__lang {
-      margin-left: 0;
-      order: 2;
-    }
-
-    &__lang-trigger {
-      min-width: auto;
-      padding: 0.35rem;
-    }
-
-    &__lang-current,
-    &__lang-chevron {
-      display: none;
-    }
-
-    &__lang-icon {
-      width: 22px;
-      height: 22px;
+      margin-left: auto;
     }
   }
 }
-
-

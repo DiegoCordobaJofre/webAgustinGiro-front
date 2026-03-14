@@ -1,10 +1,10 @@
 <header class="header">
   <div class="container">
     <nav class="nav">
-      <a routerLink="/" class="nav__logo" (click)="closeMenu()" aria-label="Agustín Giro - Inicio">
+      <a routerLink="/" class="nav__logo" (click)="closeMenu()">
         <img src="assets/logo.png" alt="Agustín Giro" class="nav__logo-img" *ngIf="logoExists; else textLogo">
         <ng-template #textLogo>
-          <span class="nav__logo-text">Agustín Giro</span>
+          <span>Agustín Giro</span>
         </ng-template>
       </a>
       
@@ -45,5 +45,3 @@
     </nav>
   </div>
 </header>
-
-

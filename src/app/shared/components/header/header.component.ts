@@ -16,7 +16,7 @@ const SUPPORTED_LANGS = ['es', 'en', 'pt'] as const;
 export class HeaderComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   isLangOpen = false;
-  logoExists = true;
+  logoExists = false;
   currentLang: string = 'es';
   currentLangLabel = '';
   private langLabels: { [key: string]: string } = {
