@@ -1,13 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
 import { Project } from '../../../../models/project.model';
+
+const STATUS_KEYS: { [key: string]: string } = {
+  'IN_EXECUTION': 'STATUS_IN_EXECUTION',
+  'LICENSING_PHASE': 'STATUS_LICENSING_PHASE',
+  'PREVIOUS_STUDY': 'STATUS_PREVIOUS_STUDY',
+  'COMPLETED': 'STATUS_COMPLETED'
+};
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.scss']
 })
@@ -19,7 +27,8 @@ export class ProjectDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -28,7 +37,7 @@ export class ProjectDetailComponent implements OnInit {
       this.loadProject(+id);
     } else {
       this.isLoading = false;
-      this.errorMessage = 'ID de proyecto no válido';
+      this.errorMessage = this.translate.instant('PROJECT_DETAIL_INVALID_ID');
     }
   }
 
@@ -41,7 +50,7 @@ export class ProjectDetailComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'No se pudo cargar el proyecto. Verifica que el backend esté corriendo y que el proyecto exista.';
+        this.errorMessage = this.translate.instant('PROJECT_DETAIL_LOAD_ERROR');
         console.error('Error al cargar proyecto:', error);
       }
     });
@@ -66,13 +75,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'IN_EXECUTION': 'En ejecución',
-      'LICENSING_PHASE': 'Fase Licenciamiento',
-      'PREVIOUS_STUDY': 'Fase Estudio-Previo',
-      'COMPLETED': 'Completado'
-    };
-    return statusMap[status] || status;
+    const key = STATUS_KEYS[status];
+    return key ? this.translate.instant(key) : status;
   }
 }
 

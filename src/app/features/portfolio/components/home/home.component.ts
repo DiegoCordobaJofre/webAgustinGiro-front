@@ -1,8 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
 import { Project, ProjectStatus } from '../../../../models/project.model';
+
+const STATUS_KEYS: { [key: string]: string } = {
+  'IN_EXECUTION': 'STATUS_IN_EXECUTION',
+  'LICENSING_PHASE': 'STATUS_LICENSING_PHASE',
+  'PREVIOUS_STUDY': 'STATUS_PREVIOUS_STUDY',
+  'COMPLETED': 'STATUS_COMPLETED'
+};
 
 interface CarouselProject {
   id: number;
@@ -16,7 +24,7 @@ interface CarouselProject {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -27,7 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoading = true;
   private autoSlideInterval: any;
 
-  constructor(private projectService: ProjectService) { }
+  constructor(
+    private projectService: ProjectService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.loadFeaturedProjects();
@@ -54,7 +65,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             title: p.title,
             description: p.description,
             category: p.category,
-            status: this.getStatusLabel(p.status),
+            status: this.getStatusLabel(p.status as string),
             image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image
           }));
         } else {
@@ -135,13 +146,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   getStatusLabel(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'IN_EXECUTION': 'En ejecución',
-      'LICENSING_PHASE': 'Fase Licenciamiento',
-      'PREVIOUS_STUDY': 'Fase Estudio-Previo',
-      'COMPLETED': 'Completado'
-    };
-    return statusMap[status] || status;
+    const key = STATUS_KEYS[status];
+    return key ? this.translate.instant(key) : status;
   }
 
   getMainImage(project: Project): string {

@@ -1,6 +1,6 @@
 <div class="project-detail" *ngIf="!isLoading && project">
   <div class="container">
-    <a routerLink="/proyectos" class="back-link">← Volver a proyectos</a>
+    <a routerLink="/proyectos" class="back-link">← {{ 'PROJECT_DETAIL_BACK' | translate }}</a>
     
     <div class="project-detail__header">
       <h1 class="project-detail__title">{{ project.title }}</h1>
@@ -49,7 +49,7 @@
 
 <div class="loading" *ngIf="isLoading">
   <div class="container">
-    <p>Cargando proyecto...</p>
+    <p>{{ 'PROJECT_DETAIL_LOADING' | translate }}</p>
   </div>
 </div>
 
@@ -57,8 +57,8 @@
   <div class="container">
     <div class="error-message">
       <p *ngIf="errorMessage">{{ errorMessage }}</p>
-      <p *ngIf="!errorMessage">Proyecto no encontrado</p>
-      <a routerLink="/proyectos" class="btn">Volver a proyectos</a>
+      <p *ngIf="!errorMessage">{{ 'PROJECT_DETAIL_NOT_FOUND' | translate }}</p>
+      <a routerLink="/proyectos" class="btn">{{ 'PROJECT_DETAIL_BACK_BTN' | translate }}</a>
     </div>
   </div>
 </div>

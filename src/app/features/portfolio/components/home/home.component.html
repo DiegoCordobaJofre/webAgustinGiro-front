@@ -20,10 +20,10 @@
     </div>
     
     <!-- Navigation arrows -->
-    <button class="carousel-nav carousel-nav--prev" (click)="previousSlide()" aria-label="Proyecto anterior">
+    <button class="carousel-nav carousel-nav--prev" (click)="previousSlide()" [attr.aria-label]="'HOME_PREV_PROJECT' | translate">
       ‹
     </button>
-    <button class="carousel-nav carousel-nav--next" (click)="nextSlide()" aria-label="Siguiente proyecto">
+    <button class="carousel-nav carousel-nav--next" (click)="nextSlide()" [attr.aria-label]="'HOME_NEXT_PROJECT' | translate">
       ›
     </button>
     
@@ -34,7 +34,7 @@
         class="carousel-dot"
         [class.carousel-dot--active]="i === currentSlide"
         (click)="goToSlide(i)"
-        [attr.aria-label]="'Ir a ' + project.title">
+        [attr.aria-label]="('HOME_GO_TO' | translate) + ' ' + project.title">
       </button>
     </div>
   </div>
@@ -42,7 +42,7 @@
 
 <div class="loading" *ngIf="isLoading">
   <div class="container">
-    <p>Cargando proyectos...</p>
+    <p>{{ 'HOME_LOADING' | translate }}</p>
   </div>
 </div>
 

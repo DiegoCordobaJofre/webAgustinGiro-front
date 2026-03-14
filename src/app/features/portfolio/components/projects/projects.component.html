@@ -1,13 +1,13 @@
 <section class="section projects-page">
   <div class="container">
-    <h1 class="page-title">Proyectos</h1>
+    <h1 class="page-title">{{ 'PROJECTS_TITLE' | translate }}</h1>
     
     <div class="filters" *ngIf="categories.length > 0">
       <button 
         class="filter-btn" 
         [class.filter-btn--active]="selectedCategory === null"
         (click)="filterByCategory(null)">
-        Todos
+        {{ 'PROJECTS_ALL' | translate }}
       </button>
       <button 
         *ngFor="let category of categories"
@@ -31,7 +31,7 @@
     </div>
     
     <ng-template #loading>
-      <div class="loading">Cargando proyectos...</div>
+      <div class="loading">{{ 'PROJECTS_LOADING' | translate }}</div>
     </ng-template>
   </div>
 </section>

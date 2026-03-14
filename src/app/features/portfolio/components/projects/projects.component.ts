@@ -1,13 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
 import { Project } from '../../../../models/project.model';
+
+const STATUS_KEYS: { [key: string]: string } = {
+  'IN_EXECUTION': 'STATUS_IN_EXECUTION',
+  'LICENSING_PHASE': 'STATUS_LICENSING_PHASE',
+  'PREVIOUS_STUDY': 'STATUS_PREVIOUS_STUDY',
+  'COMPLETED': 'STATUS_COMPLETED'
+};
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss']
 })
@@ -17,7 +25,10 @@ export class ProjectsComponent implements OnInit {
   selectedCategory: string | null = null;
   categories: string[] = [];
 
-  constructor(private projectService: ProjectService) {}
+  constructor(
+    private projectService: ProjectService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.loadProjects();
@@ -26,7 +37,6 @@ export class ProjectsComponent implements OnInit {
   private loadProjects(): void {
     this.projectService.getAll().subscribe({
       next: (projects) => {
-        // Filtrar solo proyectos que deben mostrarse en el menú
         this.projects = projects.filter(p => p.showInMenu !== false);
         this.categories = [...new Set(this.projects.map(p => p.category))];
         this.isLoading = false;
@@ -49,13 +59,8 @@ export class ProjectsComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'IN_EXECUTION': 'En ejecución',
-      'LICENSING_PHASE': 'Fase Licenciamiento',
-      'PREVIOUS_STUDY': 'Fase Estudio-Previo',
-      'COMPLETED': 'Completado'
-    };
-    return statusMap[status] || status;
+    const key = STATUS_KEYS[status];
+    return key ? this.translate.instant(key) : status;
   }
 
   getMainImage(project: Project): string {

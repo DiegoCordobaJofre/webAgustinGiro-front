@@ -1,30 +1,30 @@
 <section class="section contact-page">
   <div class="container">
     <div class="contact-content">
-      <h1 class="page-title">Contacto</h1>
+      <h1 class="page-title">{{ 'CONTACT_TITLE' | translate }}</h1>
       
       <div class="contact-grid">
         <div class="contact-info">
-          <h2>Información de Contacto</h2>
+          <h2>{{ 'CONTACT_INFO_TITLE' | translate }}</h2>
           <div class="contact-item">
-            <h3>Email</h3>
+            <h3>{{ 'CONTACT_EMAIL' | translate }}</h3>
             <p>agustinezequielgiro&#64;gmail.com</p>
           </div>
           <div class="contact-item">
-            <h3>Teléfono</h3>
+            <h3>{{ 'CONTACT_PHONE' | translate }}</h3>
             <p>+351 927 688 101</p>
           </div>
           <div class="contact-item">
-            <h3>Dirección</h3>
-            <p>Tu dirección aquí</p>
+            <h3>{{ 'CONTACT_ADDRESS' | translate }}</h3>
+            <p>{{ 'CONTACT_ADDRESS_PLACEHOLDER' | translate }}</p>
           </div>
         </div>
         
         <div class="contact-form-wrapper">
-          <h2>Envíanos un mensaje</h2>
+          <h2>{{ 'CONTACT_SEND_MESSAGE' | translate }}</h2>
           <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
             <div class="form-group">
-              <label for="name">Nombre *</label>
+              <label for="name">{{ 'CONTACT_NAME' | translate }} *</label>
               <input 
                 type="text" 
                 id="name" 
@@ -34,7 +34,7 @@
             </div>
             
             <div class="form-group">
-              <label for="email">Email *</label>
+              <label for="email">{{ 'CONTACT_EMAIL' | translate }} *</label>
               <input 
                 type="email" 
                 id="email" 
@@ -44,7 +44,7 @@
             </div>
             
             <div class="form-group">
-              <label for="message">Mensaje *</label>
+              <label for="message">{{ 'CONTACT_MESSAGE' | translate }} *</label>
               <textarea 
                 id="message" 
                 formControlName="message"
@@ -57,7 +57,7 @@
               type="submit" 
               class="btn btn--primary"
               [disabled]="contactForm.invalid">
-              Enviar Mensaje
+              {{ 'CONTACT_SUBMIT' | translate }}
             </button>
           </form>
         </div>

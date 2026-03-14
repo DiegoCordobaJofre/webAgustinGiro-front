@@ -1,10 +1,10 @@
 <header class="header">
   <div class="container">
     <nav class="nav">
-      <a routerLink="/" class="nav__logo" (click)="closeMenu()">
+      <a routerLink="/" class="nav__logo" (click)="closeMenu()" aria-label="Agustín Giro - Inicio">
         <img src="assets/logo.png" alt="Agustín Giro" class="nav__logo-img" *ngIf="logoExists; else textLogo">
         <ng-template #textLogo>
-          <span>Agustín Giro</span>
+          <span class="nav__logo-text">Agustín Giro</span>
         </ng-template>
       </a>
       
@@ -15,10 +15,33 @@
       </button>
       
       <ul class="nav__menu" [class.nav__menu--open]="isMenuOpen">
-        <li><a routerLink="/proyectos" (click)="closeMenu()">Proyectos</a></li>
-        <li><a routerLink="/sobre" (click)="closeMenu()">Sobre</a></li>
-        <li><a routerLink="/contacto" (click)="closeMenu()">Contacto</a></li>
+        <li><a routerLink="/proyectos" (click)="closeMenu()">{{ 'NAV_PROJECTS' | translate }}</a></li>
+        <li><a routerLink="/sobre" (click)="closeMenu()">{{ 'NAV_ABOUT' | translate }}</a></li>
+        <li><a routerLink="/contacto" (click)="closeMenu()">{{ 'NAV_CONTACT' | translate }}</a></li>
       </ul>
+
+      <div class="nav__lang" [class.nav__lang--open]="isLangOpen">
+        <button
+          type="button"
+          class="nav__lang-trigger"
+          (click)="toggleLang()"
+          [attr.aria-label]="'LANG_ARIA' | translate"
+          [attr.aria-expanded]="isLangOpen">
+          <svg class="nav__lang-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span class="nav__lang-current">{{ currentLangLabel }}</span>
+          <svg class="nav__lang-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+        <ul class="nav__lang-dropdown">
+          <li><button type="button" class="nav__lang-option" [class.nav__lang-option--active]="currentLang === 'es'" (click)="setLang('es')">{{ 'LANG_ES' | translate }}</button></li>
+          <li><button type="button" class="nav__lang-option" [class.nav__lang-option--active]="currentLang === 'en'" (click)="setLang('en')">{{ 'LANG_EN' | translate }}</button></li>
+          <li><button type="button" class="nav__lang-option" [class.nav__lang-option--active]="currentLang === 'pt'" (click)="setLang('pt')">{{ 'LANG_PT' | translate }}</button></li>
+        </ul>
+      </div>
     </nav>
   </div>
 </header>
