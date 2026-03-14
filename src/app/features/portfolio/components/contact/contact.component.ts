@@ -26,7 +26,14 @@ export class ContactComponent {
       const { name, email, message } = this.contactForm.value;
       const text = `*Mensaje desde la web*\n\nNombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`;
       const whatsappUrl = `https://wa.me/${environment.whatsappNumber}?text=${encodeURIComponent(text)}`;
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      // Usar <a> + click evita que el bloqueador de popups en prod (Vercel) bloquee la apertura
+      const link = document.createElement('a');
+      link.href = whatsappUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       this.contactForm.reset();
     }
   }
