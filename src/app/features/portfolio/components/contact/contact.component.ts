@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-contact',
@@ -22,9 +23,10 @@ export class ContactComponent {
 
   onSubmit(): void {
     if (this.contactForm.valid) {
-      // Aquí se enviará al backend cuando esté listo
-      console.log('Form submitted:', this.contactForm.value);
-      alert('Mensaje enviado. Te contactaremos pronto.');
+      const { name, email, message } = this.contactForm.value;
+      const text = `*Mensaje desde la web*\n\nNombre: ${name}\nEmail: ${email}\n\nMensaje:\n${message}`;
+      const whatsappUrl = `https://wa.me/${environment.whatsappNumber}?text=${encodeURIComponent(text)}`;
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
       this.contactForm.reset();
     }
   }

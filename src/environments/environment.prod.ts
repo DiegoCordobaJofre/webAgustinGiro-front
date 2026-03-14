@@ -1,6 +1,8 @@
 export const environment = {
   production: true,
-  apiUrl: '  https://webagustingiro-back.onrender.com'
+  apiUrl: '  https://webagustingiro-back.onrender.com',
+  /** Número de WhatsApp en formato internacional sin + ni espacios */
+  whatsappNumber: '351927688101'
 };
 
 
