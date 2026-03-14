@@ -1,4 +1,4 @@
-# Web Agustín Giro
+# Web Agustín Giró
 
 Sitio web del arquitecto Agustín Giró: portfolio de proyectos, sobre mí y contacto. Incluye panel de administración para gestionar proyectos (CRUD).
 
