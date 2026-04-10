@@ -4,7 +4,10 @@
       <a routerLink="/" class="nav__logo" (click)="closeMenu()">
         <img src="assets/logo.png" alt="Agustín Giró" class="nav__logo-img" *ngIf="logoExists; else textLogo">
         <ng-template #textLogo>
-          <span>Agustín Giró</span>
+          <div class="nav__logo-text">
+            <span class="nav__logo-name">Agustín Giró</span>
+            <span class="nav__logo-subtitle">Arquitectura</span>
+          </div>
         </ng-template>
       </a>
       

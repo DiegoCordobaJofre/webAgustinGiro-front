@@ -106,22 +106,22 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
   border: none;
   width: 50px;
   height: 50px;
-  font-size: 2rem;
+  font-size: 2.5rem;
   cursor: pointer;
-  transition: all var(--transition-base);
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary);
-  
+  color: rgba(255, 255, 255, 0.35);
+  transition: color var(--transition-base);
+  line-height: 1;
+
   &:hover {
-    background: var(--color-white);
-    transform: translateY(-50%) scale(1.1);
+    color: rgba(255, 255, 255, 0.75);
   }
   
   &--prev {
@@ -135,7 +135,7 @@
   @media (max-width: 768px) {
     width: 40px;
     height: 40px;
-    font-size: 1.5rem;
+    font-size: 2rem;
     
     &--prev {
       left: var(--spacing-xs);

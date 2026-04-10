@@ -17,10 +17,7 @@
   &__logo {
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    text-decoration: none;
     
     &:hover {
       color: var(--color-text);
@@ -31,6 +28,28 @@
     height: 40px;
     width: auto;
     object-fit: contain;
+  }
+
+  &__logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+
+  &__logo-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  &__logo-subtitle {
+    font-size: 0.65rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-text-light);
   }
   
   &__toggle {
