@@ -17,21 +17,21 @@
 
 .project-detail__header {
   margin-bottom: var(--spacing-xl);
-  
-  &__title {
-    font-size: 2.5rem;
-    font-weight: 300;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  &__meta {
-    display: flex;
-    gap: var(--spacing-md);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-light);
-  }
+}
+
+.project-detail__title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: var(--spacing-sm);
+}
+
+.project-detail__meta {
+  display: flex;
+  gap: var(--spacing-md);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-light);
 }
 
 .project-detail__gallery {
