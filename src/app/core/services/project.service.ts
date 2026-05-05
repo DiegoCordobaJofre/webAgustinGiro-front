@@ -5,7 +5,8 @@ import {
   Project,
   ProjectCreateDto,
   ProjectImage,
-  ProjectUpdateDto
+  ProjectUpdateDto,
+  ProjectVideo
 } from '../../models/project.model';
 import { environment } from '../../../environments/environment';
 
@@ -63,6 +64,38 @@ export class ProjectService {
   deleteImage(projectId: number, imageId: number): Observable<void> {
     return this.http.delete<void>(
       `${this.apiUrl}/${projectId}/images/${imageId}`
+    );
+  }
+
+  /**
+   * Sube un video asociado a un proyecto. El backend lo guarda en Cloudflare R2
+   * y persiste el metadata. Devuelve el video creado (con id y url publica de R2).
+   */
+  uploadVideo(
+    projectId: number,
+    file: File,
+    options: { title?: string; description?: string; isMain?: boolean } = {}
+  ): Observable<ProjectVideo> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (options.title) {
+      formData.append('title', options.title);
+    }
+    if (options.description) {
+      formData.append('description', options.description);
+    }
+    if (typeof options.isMain === 'boolean') {
+      formData.append('isMain', String(options.isMain));
+    }
+    return this.http.post<ProjectVideo>(
+      `${this.apiUrl}/${projectId}/videos`,
+      formData
+    );
+  }
+
+  deleteVideo(projectId: number, videoId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${projectId}/videos/${videoId}`
     );
   }
 }

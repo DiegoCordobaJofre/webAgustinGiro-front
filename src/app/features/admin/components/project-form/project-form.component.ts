@@ -14,7 +14,8 @@ import {
   ProjectCreateDto,
   ProjectImage,
   ProjectStatus,
-  ProjectUpdateDto
+  ProjectUpdateDto,
+  ProjectVideo
 } from '../../../../models/project.model';
 
 interface PendingUpload {
@@ -34,6 +35,13 @@ const ALLOWED_IMAGE_TYPES = [
 ];
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
+const ALLOWED_VIDEO_TYPES = [
+  'video/mp4',
+  'video/webm',
+  'video/quicktime'
+];
+const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
+
 @Component({
   selector: 'app-project-form',
   standalone: true,
@@ -47,17 +55,19 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   projectId: number | null = null;
   isLoading = false;
 
-  /** Imagenes ya guardadas en el backend (solo en modo edicion). */
+  // ----- Imagenes -----
   existingImages: ProjectImage[] = [];
+  pendingImageUploads: PendingUpload[] = [];
+  nextImageUploadIsMain = false;
+  isDraggingImage = false;
+  imageUploadError = '';
 
-  /** Archivos seleccionados en modo creacion, todavia sin subir. */
-  pendingUploads: PendingUpload[] = [];
-
-  /** En modo edicion, marca para que la proxima subida sea la principal. */
-  nextUploadIsMain = false;
-
-  isDragging = false;
-  uploadError = '';
+  // ----- Videos -----
+  existingVideos: ProjectVideo[] = [];
+  pendingVideoUploads: PendingUpload[] = [];
+  nextVideoUploadIsMain = false;
+  isDraggingVideo = false;
+  videoUploadError = '';
 
   statusOptions = [
     { value: ProjectStatus.IN_EXECUTION, label: 'En ejecución' },
@@ -66,7 +76,8 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     { value: ProjectStatus.COMPLETED, label: 'Completado' }
   ];
 
-  readonly acceptAttr = ALLOWED_IMAGE_TYPES.join(',');
+  readonly imageAcceptAttr = ALLOWED_IMAGE_TYPES.join(',');
+  readonly videoAcceptAttr = ALLOWED_VIDEO_TYPES.join(',');
 
   constructor(
     private fb: FormBuilder,
@@ -94,7 +105,8 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.pendingUploads.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+    this.pendingImageUploads.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+    this.pendingVideoUploads.forEach((p) => URL.revokeObjectURL(p.previewUrl));
   }
 
   private loadProject(id: number): void {
@@ -119,64 +131,75 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     this.existingImages = [...(project.images ?? [])].sort(
       (a, b) => (a.order ?? 0) - (b.order ?? 0)
     );
+    this.existingVideos = [...(project.videos ?? [])].sort(
+      (a, b) => (a.order ?? 0) - (b.order ?? 0)
+    );
   }
 
-  // ---------- Drag and drop ----------
+  // ============================================================
+  //                        IMAGENES
+  // ============================================================
 
-  onDragOver(event: DragEvent): void {
+  onImageDragOver(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging = true;
+    this.isDraggingImage = true;
   }
 
-  onDragLeave(event: DragEvent): void {
+  onImageDragLeave(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging = false;
+    this.isDraggingImage = false;
   }
 
-  onDrop(event: DragEvent): void {
+  onImageDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
-    this.isDragging = false;
+    this.isDraggingImage = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      this.handleFiles(Array.from(files));
+      this.handleImageFiles(Array.from(files));
     }
   }
 
-  onFileInput(event: Event): void {
+  onImageFileInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.handleFiles(Array.from(input.files));
+      this.handleImageFiles(Array.from(input.files));
       input.value = '';
     }
   }
 
-  private handleFiles(files: File[]): void {
-    this.uploadError = '';
-    const validFiles: File[] = [];
+  private handleImageFiles(files: File[]): void {
+    this.imageUploadError = '';
+    const valid: File[] = [];
     for (const file of files) {
-      const error = this.validateFile(file);
+      const error = this.validateImageFile(file);
       if (error) {
-        this.uploadError = `${file.name}: ${error}`;
+        this.imageUploadError = `${file.name}: ${error}`;
         continue;
       }
-      validFiles.push(file);
+      valid.push(file);
     }
-
-    if (validFiles.length === 0) {
-      return;
-    }
+    if (valid.length === 0) return;
 
     if (this.isEditMode && this.projectId) {
-      this.uploadFilesImmediately(validFiles);
+      valid.forEach((file) => this.uploadOneImage(file));
     } else {
-      this.queuePendingFiles(validFiles);
+      valid.forEach((file) => {
+        this.pendingImageUploads.push({
+          file,
+          previewUrl: URL.createObjectURL(file),
+          isMain:
+            this.pendingImageUploads.length === 0 &&
+            this.existingImages.length === 0,
+          uploading: false
+        });
+      });
     }
   }
 
-  private validateFile(file: File): string | null {
+  private validateImageFile(file: File): string | null {
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       return 'tipo no permitido (solo JPG, PNG, WEBP, GIF)';
     }
@@ -186,53 +209,17 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  // ---------- Modo creacion: cola en memoria ----------
-
-  private queuePendingFiles(files: File[]): void {
-    files.forEach((file) => {
-      this.pendingUploads.push({
-        file,
-        previewUrl: URL.createObjectURL(file),
-        isMain: this.pendingUploads.length === 0 && this.existingImages.length === 0,
-        uploading: false
-      });
-    });
-  }
-
-  removePendingUpload(index: number): void {
-    const removed = this.pendingUploads.splice(index, 1)[0];
-    if (removed) {
-      URL.revokeObjectURL(removed.previewUrl);
-    }
-  }
-
-  setPendingMain(index: number): void {
-    this.pendingUploads.forEach((p, i) => (p.isMain = i === index));
-  }
-
-  // ---------- Modo edicion: upload inmediato ----------
-
-  private uploadFilesImmediately(files: File[]): void {
-    if (!this.projectId) {
-      return;
-    }
-    files.forEach((file) => this.uploadOne(file));
-  }
-
-  private uploadOne(file: File): void {
-    if (!this.projectId) {
-      return;
-    }
-    const previewUrl = URL.createObjectURL(file);
+  private uploadOneImage(file: File): void {
+    if (!this.projectId) return;
     const pending: PendingUpload = {
       file,
-      previewUrl,
-      isMain: this.nextUploadIsMain,
+      previewUrl: URL.createObjectURL(file),
+      isMain: this.nextImageUploadIsMain,
       uploading: true
     };
-    this.pendingUploads.push(pending);
-    const isMainForThisUpload = this.nextUploadIsMain;
-    this.nextUploadIsMain = false;
+    this.pendingImageUploads.push(pending);
+    const isMainForThisUpload = this.nextImageUploadIsMain;
+    this.nextImageUploadIsMain = false;
 
     this.projectService
       .uploadImage(this.projectId, file, {
@@ -245,7 +232,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
             this.existingImages.forEach((img) => (img.isMain = false));
           }
           this.existingImages.push(saved);
-          this.removePendingByRef(pending);
+          this.removePending(this.pendingImageUploads, pending);
         },
         error: (err) => {
           pending.uploading = false;
@@ -254,23 +241,20 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       });
   }
 
-  private removePendingByRef(ref: PendingUpload): void {
-    const idx = this.pendingUploads.indexOf(ref);
-    if (idx >= 0) {
-      const removed = this.pendingUploads.splice(idx, 1)[0];
+  removePendingImage(index: number): void {
+    const removed = this.pendingImageUploads.splice(index, 1)[0];
+    if (removed) {
       URL.revokeObjectURL(removed.previewUrl);
     }
   }
 
-  // ---------- Eliminar imagen existente ----------
+  setPendingImageMain(index: number): void {
+    this.pendingImageUploads.forEach((p, i) => (p.isMain = i === index));
+  }
 
   deleteExistingImage(image: ProjectImage): void {
-    if (!this.projectId || image.id == null) {
-      return;
-    }
-    if (!confirm('¿Eliminar esta imagen?')) {
-      return;
-    }
+    if (!this.projectId || image.id == null) return;
+    if (!confirm('¿Eliminar esta imagen?')) return;
     this.projectService.deleteImage(this.projectId, image.id).subscribe({
       next: () => {
         this.existingImages = this.existingImages.filter(
@@ -281,7 +265,138 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ---------- Guardar metadata ----------
+  // ============================================================
+  //                         VIDEOS
+  // ============================================================
+
+  onVideoDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDraggingVideo = true;
+  }
+
+  onVideoDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDraggingVideo = false;
+  }
+
+  onVideoDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDraggingVideo = false;
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.handleVideoFiles(Array.from(files));
+    }
+  }
+
+  onVideoFileInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.handleVideoFiles(Array.from(input.files));
+      input.value = '';
+    }
+  }
+
+  private handleVideoFiles(files: File[]): void {
+    this.videoUploadError = '';
+    const valid: File[] = [];
+    for (const file of files) {
+      const error = this.validateVideoFile(file);
+      if (error) {
+        this.videoUploadError = `${file.name}: ${error}`;
+        continue;
+      }
+      valid.push(file);
+    }
+    if (valid.length === 0) return;
+
+    if (this.isEditMode && this.projectId) {
+      valid.forEach((file) => this.uploadOneVideo(file));
+    } else {
+      valid.forEach((file) => {
+        this.pendingVideoUploads.push({
+          file,
+          previewUrl: URL.createObjectURL(file),
+          isMain:
+            this.pendingVideoUploads.length === 0 &&
+            this.existingVideos.length === 0,
+          uploading: false
+        });
+      });
+    }
+  }
+
+  private validateVideoFile(file: File): string | null {
+    if (!ALLOWED_VIDEO_TYPES.includes(file.type)) {
+      return 'tipo no permitido (solo MP4, WEBM, MOV)';
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      return 'supera el tamaño maximo de 100 MB';
+    }
+    return null;
+  }
+
+  private uploadOneVideo(file: File): void {
+    if (!this.projectId) return;
+    const pending: PendingUpload = {
+      file,
+      previewUrl: URL.createObjectURL(file),
+      isMain: this.nextVideoUploadIsMain,
+      uploading: true
+    };
+    this.pendingVideoUploads.push(pending);
+    const isMainForThisUpload = this.nextVideoUploadIsMain;
+    this.nextVideoUploadIsMain = false;
+
+    this.projectService
+      .uploadVideo(this.projectId, file, {
+        title: file.name,
+        isMain: isMainForThisUpload
+      })
+      .subscribe({
+        next: (saved) => {
+          if (saved.isMain) {
+            this.existingVideos.forEach((v) => (v.isMain = false));
+          }
+          this.existingVideos.push(saved);
+          this.removePending(this.pendingVideoUploads, pending);
+        },
+        error: (err) => {
+          pending.uploading = false;
+          pending.error = this.extractErrorMessage(err);
+        }
+      });
+  }
+
+  removePendingVideo(index: number): void {
+    const removed = this.pendingVideoUploads.splice(index, 1)[0];
+    if (removed) {
+      URL.revokeObjectURL(removed.previewUrl);
+    }
+  }
+
+  setPendingVideoMain(index: number): void {
+    this.pendingVideoUploads.forEach((p, i) => (p.isMain = i === index));
+  }
+
+  deleteExistingVideo(video: ProjectVideo): void {
+    if (!this.projectId || video.id == null) return;
+    if (!confirm('¿Eliminar este video?')) return;
+    this.projectService.deleteVideo(this.projectId, video.id).subscribe({
+      next: () => {
+        this.existingVideos = this.existingVideos.filter(
+          (v) => v.id !== video.id
+        );
+      },
+      error: () => alert('No se pudo eliminar el video')
+    });
+  }
+
+  // ============================================================
+  //                         GUARDAR
+  // ============================================================
 
   onSubmit(): void {
     if (!this.projectForm.valid) {
@@ -293,14 +408,12 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     if (this.isEditMode && this.projectId) {
       this.updateProjectMetadata();
     } else {
-      this.createProjectAndUpload();
+      this.createProjectAndUploadAll();
     }
   }
 
   private updateProjectMetadata(): void {
-    if (!this.projectId) {
-      return;
-    }
+    if (!this.projectId) return;
     const dto: ProjectUpdateDto = this.projectForm.value;
     this.projectService.update(this.projectId, dto).subscribe({
       next: () => this.router.navigate(['/admin/dashboard']),
@@ -311,7 +424,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private createProjectAndUpload(): void {
+  private createProjectAndUploadAll(): void {
     const dto: ProjectCreateDto = {
       ...this.projectForm.value,
       images: []
@@ -323,11 +436,13 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/admin/dashboard']);
           return;
         }
-        if (this.pendingUploads.length === 0) {
+        const totalUploads =
+          this.pendingImageUploads.length + this.pendingVideoUploads.length;
+        if (totalUploads === 0) {
           this.router.navigate(['/admin/dashboard']);
           return;
         }
-        this.uploadAllPending(newId);
+        this.uploadAllPending(newId, totalUploads);
       },
       error: () => {
         alert('Error al crear el proyecto');
@@ -336,11 +451,25 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private uploadAllPending(projectId: number): void {
-    let remaining = this.pendingUploads.length;
+  private uploadAllPending(projectId: number, total: number): void {
+    let remaining = total;
     let hadError = false;
 
-    this.pendingUploads.forEach((pending) => {
+    const onDone = () => {
+      remaining--;
+      if (remaining === 0) {
+        if (hadError) {
+          alert(
+            'Algunos archivos no se pudieron subir. Revisa la lista y reintenta desde la edicion.'
+          );
+          this.isLoading = false;
+          return;
+        }
+        this.router.navigate(['/admin/dashboard']);
+      }
+    };
+
+    this.pendingImageUploads.forEach((pending) => {
       pending.uploading = true;
       this.projectService
         .uploadImage(projectId, pending.file, {
@@ -350,31 +479,49 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             pending.uploading = false;
-            remaining--;
-            if (remaining === 0) {
-              this.finishCreate(hadError);
-            }
+            onDone();
           },
           error: (err) => {
             pending.uploading = false;
             pending.error = this.extractErrorMessage(err);
             hadError = true;
-            remaining--;
-            if (remaining === 0) {
-              this.finishCreate(hadError);
-            }
+            onDone();
+          }
+        });
+    });
+
+    this.pendingVideoUploads.forEach((pending) => {
+      pending.uploading = true;
+      this.projectService
+        .uploadVideo(projectId, pending.file, {
+          title: pending.file.name,
+          isMain: pending.isMain
+        })
+        .subscribe({
+          next: () => {
+            pending.uploading = false;
+            onDone();
+          },
+          error: (err) => {
+            pending.uploading = false;
+            pending.error = this.extractErrorMessage(err);
+            hadError = true;
+            onDone();
           }
         });
     });
   }
 
-  private finishCreate(hadError: boolean): void {
-    if (hadError) {
-      alert('Algunas imagenes no se pudieron subir. Revisa la lista y reintenta desde la edicion.');
-      this.isLoading = false;
-      return;
+  // ============================================================
+  //                         HELPERS
+  // ============================================================
+
+  private removePending(list: PendingUpload[], ref: PendingUpload): void {
+    const idx = list.indexOf(ref);
+    if (idx >= 0) {
+      const removed = list.splice(idx, 1)[0];
+      URL.revokeObjectURL(removed.previewUrl);
     }
-    this.router.navigate(['/admin/dashboard']);
   }
 
   private extractErrorMessage(err: unknown): string {

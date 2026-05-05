@@ -66,6 +66,7 @@
           </div>
         </div>
 
+        <!-- ============== IMAGENES ============== -->
         <div class="form-section">
           <div class="form-section__header">
             <h3>Imágenes</h3>
@@ -101,15 +102,15 @@
           <h4 class="images-subtitle" *ngIf="isEditMode">Subir nuevas imágenes</h4>
 
           <label class="dropzone"
-                 [class.dropzone--active]="isDragging"
-                 (dragover)="onDragOver($event)"
-                 (dragleave)="onDragLeave($event)"
-                 (drop)="onDrop($event)">
+                 [class.dropzone--active]="isDraggingImage"
+                 (dragover)="onImageDragOver($event)"
+                 (dragleave)="onImageDragLeave($event)"
+                 (drop)="onImageDrop($event)">
             <input
               type="file"
-              [accept]="acceptAttr"
+              [accept]="imageAcceptAttr"
               multiple
-              (change)="onFileInput($event)"
+              (change)="onImageFileInput($event)"
               hidden>
             <div class="dropzone__content">
               <strong>Arrastra imágenes aquí</strong>
@@ -118,18 +119,18 @@
           </label>
 
           <label class="checkbox-label main-toggle" *ngIf="isEditMode">
-            <input type="checkbox" [(ngModel)]="nextUploadIsMain" [ngModelOptions]="{standalone: true}">
+            <input type="checkbox" [(ngModel)]="nextImageUploadIsMain" [ngModelOptions]="{standalone: true}">
             <span>La próxima imagen que suba será la principal</span>
           </label>
 
-          <p class="form-error" *ngIf="uploadError">{{ uploadError }}</p>
+          <p class="form-error" *ngIf="imageUploadError">{{ imageUploadError }}</p>
 
-          <div class="images-grid" *ngIf="pendingUploads.length > 0">
+          <div class="images-grid" *ngIf="pendingImageUploads.length > 0">
             <h4 class="images-subtitle images-subtitle--full" *ngIf="!isEditMode">
               En cola para subir al guardar
             </h4>
             <div
-              *ngFor="let pending of pendingUploads; let i = index"
+              *ngFor="let pending of pendingImageUploads; let i = index"
               class="image-card image-card--pending"
               [class.image-card--main]="pending.isMain">
               <div class="image-card__thumb">
@@ -152,14 +153,118 @@
                     type="button"
                     class="btn btn--small"
                     [class.btn--primary]="pending.isMain"
-                    (click)="setPendingMain(i)">
+                    (click)="setPendingImageMain(i)">
                     {{ pending.isMain ? 'Principal' : 'Marcar principal' }}
                   </button>
                   <button
                     *ngIf="!pending.uploading"
                     type="button"
                     class="btn btn--small btn--danger"
-                    (click)="removePendingUpload(i)">
+                    (click)="removePendingImage(i)">
+                    Quitar
+                  </button>
+                </div>
+                <p class="form-error" *ngIf="pending.error">{{ pending.error }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== VIDEOS ============== -->
+        <div class="form-section">
+          <div class="form-section__header">
+            <h3>Videos</h3>
+            <span class="form-section__hint">MP4, WEBM o MOV · máx 100 MB</span>
+          </div>
+
+          <ng-container *ngIf="isEditMode && existingVideos.length > 0">
+            <h4 class="images-subtitle">Videos actuales</h4>
+            <div class="images-grid">
+              <div
+                *ngFor="let video of existingVideos"
+                class="image-card"
+                [class.image-card--main]="video.isMain">
+                <div class="image-card__thumb image-card__thumb--video">
+                  <video [src]="video.url" controls preload="metadata"></video>
+                  <span class="image-card__badge" *ngIf="video.isMain">Principal</span>
+                </div>
+                <div class="image-card__footer">
+                  <span class="image-card__name" [title]="video.title">
+                    {{ video.title || 'sin título' }}
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn--small btn--danger"
+                    (click)="deleteExistingVideo(video)">
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <h4 class="images-subtitle" *ngIf="isEditMode">Subir nuevos videos</h4>
+
+          <label class="dropzone"
+                 [class.dropzone--active]="isDraggingVideo"
+                 (dragover)="onVideoDragOver($event)"
+                 (dragleave)="onVideoDragLeave($event)"
+                 (drop)="onVideoDrop($event)">
+            <input
+              type="file"
+              [accept]="videoAcceptAttr"
+              multiple
+              (change)="onVideoFileInput($event)"
+              hidden>
+            <div class="dropzone__content">
+              <strong>Arrastra videos aquí</strong>
+              <span>o haz clic para seleccionar desde tu equipo</span>
+            </div>
+          </label>
+
+          <label class="checkbox-label main-toggle" *ngIf="isEditMode">
+            <input type="checkbox" [(ngModel)]="nextVideoUploadIsMain" [ngModelOptions]="{standalone: true}">
+            <span>El próximo video que suba será el principal</span>
+          </label>
+
+          <p class="form-error" *ngIf="videoUploadError">{{ videoUploadError }}</p>
+
+          <div class="images-grid" *ngIf="pendingVideoUploads.length > 0">
+            <h4 class="images-subtitle images-subtitle--full" *ngIf="!isEditMode">
+              En cola para subir al guardar
+            </h4>
+            <div
+              *ngFor="let pending of pendingVideoUploads; let i = index"
+              class="image-card image-card--pending"
+              [class.image-card--main]="pending.isMain">
+              <div class="image-card__thumb image-card__thumb--video">
+                <video [src]="pending.previewUrl" controls preload="metadata"></video>
+                <span class="image-card__badge" *ngIf="pending.isMain">Principal</span>
+                <span class="image-card__badge image-card__badge--info" *ngIf="pending.uploading">
+                  Subiendo...
+                </span>
+                <span class="image-card__badge image-card__badge--error" *ngIf="pending.error">
+                  Error
+                </span>
+              </div>
+              <div class="image-card__footer">
+                <span class="image-card__name" [title]="pending.file.name">
+                  {{ pending.file.name }}
+                </span>
+                <div class="image-card__actions">
+                  <button
+                    *ngIf="!isEditMode"
+                    type="button"
+                    class="btn btn--small"
+                    [class.btn--primary]="pending.isMain"
+                    (click)="setPendingVideoMain(i)">
+                    {{ pending.isMain ? 'Principal' : 'Marcar principal' }}
+                  </button>
+                  <button
+                    *ngIf="!pending.uploading"
+                    type="button"
+                    class="btn btn--small btn--danger"
+                    (click)="removePendingVideo(i)">
                     Quitar
                   </button>
                 </div>

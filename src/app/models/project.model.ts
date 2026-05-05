@@ -5,6 +5,7 @@ export interface Project {
   category: string;
   status: ProjectStatus;
   images: ProjectImage[];
+  videos?: ProjectVideo[];
   featured?: boolean; // Aparece en el carrusel de la página principal
   showInMenu?: boolean; // Aparece en la lista de proyectos
   createdAt?: Date;
@@ -15,6 +16,15 @@ export interface ProjectImage {
   id?: number;
   url: string;
   alt: string;
+  order: number;
+  isMain: boolean;
+}
+
+export interface ProjectVideo {
+  id?: number;
+  url: string;
+  title: string;
+  description?: string;
   order: number;
   isMain: boolean;
 }
