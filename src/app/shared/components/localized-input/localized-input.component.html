@@ -1,0 +1,50 @@
+<div class="localized-input">
+  <div class="localized-input__header">
+    <label *ngIf="label" class="localized-input__label">
+      {{ label }}<span *ngIf="required"> *</span>
+    </label>
+    <button
+      *ngIf="translationsEnabled"
+      type="button"
+      class="btn btn--small btn--ghost"
+      [disabled]="isTranslating || disabled"
+      (click)="autoTranslate()">
+      {{ isTranslating ? 'Traduciendo...' : 'Auto-traducir' }}
+    </button>
+  </div>
+
+  <div class="localized-input__tabs">
+    <button
+      *ngFor="let lang of langs"
+      type="button"
+      class="localized-input__tab"
+      [class.localized-input__tab--active]="activeLang === lang"
+      [class.localized-input__tab--filled]="isLangFilled(lang)"
+      (click)="setLang(lang)">
+      {{ lang | uppercase }}
+    </button>
+  </div>
+
+  <ng-container *ngFor="let lang of langs">
+    <ng-container *ngIf="activeLang === lang">
+      <textarea
+        *ngIf="multiline"
+        class="form-input form-textarea"
+        [rows]="rows"
+        [placeholder]="placeholder"
+        [value]="value[lang] || ''"
+        [disabled]="disabled"
+        (input)="onInput(lang, $any($event.target).value)"></textarea>
+      <input
+        *ngIf="!multiline"
+        type="text"
+        class="form-input"
+        [placeholder]="placeholder"
+        [value]="value[lang] || ''"
+        [disabled]="disabled"
+        (input)="onInput(lang, $any($event.target).value)">
+    </ng-container>
+  </ng-container>
+
+  <p class="form-error" *ngIf="translationError">{{ translationError }}</p>
+</div>

@@ -1,12 +1,14 @@
+import { Localized } from '../core/i18n/localized';
+
 export interface Project {
   id?: number;
-  title: string;
-  description: string;
-  category: string;
+  title: Localized;
+  description: Localized;
+  category: ProjectCategory;
   status: ProjectStatus;
   images: ProjectImage[];
   videos?: ProjectVideo[];
-  featured?: boolean; // Aparece en el carrusel de la página principal
+  featured?: boolean; // Aparece en el carrusel de la pagina principal
   showInMenu?: boolean; // Aparece en la lista de proyectos
   createdAt?: Date;
   updatedAt?: Date;
@@ -23,8 +25,8 @@ export interface ProjectImage {
 export interface ProjectVideo {
   id?: number;
   url: string;
-  title: string;
-  description?: string;
+  title: Localized;
+  description?: Localized;
   order: number;
   isMain: boolean;
 }
@@ -36,10 +38,32 @@ export enum ProjectStatus {
   COMPLETED = 'COMPLETED'
 }
 
+export enum ProjectCategory {
+  RESIDENTIAL = 'RESIDENTIAL',
+  COMMERCIAL = 'COMMERCIAL',
+  INSTITUTIONAL = 'INSTITUTIONAL',
+  INTERIOR = 'INTERIOR',
+  URBANISM = 'URBANISM',
+  RENOVATION = 'RENOVATION',
+  LANDSCAPE = 'LANDSCAPE',
+  OTHER = 'OTHER'
+}
+
+export const PROJECT_CATEGORIES: ProjectCategory[] = [
+  ProjectCategory.RESIDENTIAL,
+  ProjectCategory.COMMERCIAL,
+  ProjectCategory.INSTITUTIONAL,
+  ProjectCategory.INTERIOR,
+  ProjectCategory.URBANISM,
+  ProjectCategory.RENOVATION,
+  ProjectCategory.LANDSCAPE,
+  ProjectCategory.OTHER
+];
+
 export interface ProjectCreateDto {
-  title: string;
-  description: string;
-  category: string;
+  title: Localized;
+  description: Localized;
+  category: ProjectCategory;
   status: ProjectStatus;
   images: ProjectImageCreateDto[];
   featured?: boolean;
@@ -54,14 +78,11 @@ export interface ProjectImageCreateDto {
 }
 
 export interface ProjectUpdateDto {
-  title?: string;
-  description?: string;
-  category?: string;
+  title?: Localized;
+  description?: Localized;
+  category?: ProjectCategory;
   status?: ProjectStatus;
   images?: ProjectImageCreateDto[];
   featured?: boolean;
   showInMenu?: boolean;
 }
-
-
-

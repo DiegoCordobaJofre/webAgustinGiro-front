@@ -8,10 +8,10 @@
         <div class="carousel-slide__overlay"></div>
         <div class="carousel-slide__content" [routerLink]="['/proyectos', project.id]">
           <div class="carousel-slide__info">
-            <h2 class="carousel-slide__title">{{ project.title }}</h2>
-            <p class="carousel-slide__description">{{ project.description }}</p>
+            <h2 class="carousel-slide__title">{{ titleFor(project) }}</h2>
+            <p class="carousel-slide__description">{{ descriptionFor(project) }}</p>
             <div class="carousel-slide__meta">
-              <span class="carousel-slide__category">{{ project.category }}</span>
+              <span class="carousel-slide__category">{{ categoryLabelFor(project) }}</span>
               <span class="carousel-slide__status">{{ project.status }}</span>
             </div>
           </div>
@@ -34,7 +34,7 @@
         class="carousel-dot"
         [class.carousel-dot--active]="i === currentSlide"
         (click)="goToSlide(i)"
-        [attr.aria-label]="('HOME_GO_TO' | translate) + ' ' + project.title">
+        [attr.aria-label]="('HOME_GO_TO' | translate) + ' ' + titleFor(project)">
       </button>
     </div>
   </div>

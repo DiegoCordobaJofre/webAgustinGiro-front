@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
-import { Project } from '../../../../models/project.model';
+import { Project, ProjectCategory } from '../../../../models/project.model';
+import { pickLocale } from '../../../../core/i18n/localized';
 
 const STATUS_KEYS: { [key: string]: string } = {
   'IN_EXECUTION': 'STATUS_IN_EXECUTION',
@@ -22,8 +23,8 @@ const STATUS_KEYS: { [key: string]: string } = {
 export class ProjectsComponent implements OnInit {
   projects: Project[] = [];
   isLoading = true;
-  selectedCategory: string | null = null;
-  categories: string[] = [];
+  selectedCategory: ProjectCategory | null = null;
+  categories: ProjectCategory[] = [];
 
   constructor(
     private projectService: ProjectService,
@@ -38,7 +39,8 @@ export class ProjectsComponent implements OnInit {
     this.projectService.getAll().subscribe({
       next: (projects) => {
         this.projects = projects.filter(p => p.showInMenu !== false);
-        this.categories = [...new Set(this.projects.map(p => p.category))];
+        this.categories = [...new Set(this.projects.map(p => p.category))]
+            .filter((c): c is ProjectCategory => !!c);
         this.isLoading = false;
       },
       error: () => {
@@ -47,7 +49,7 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
-  filterByCategory(category: string | null): void {
+  filterByCategory(category: ProjectCategory | null): void {
     this.selectedCategory = category;
   }
 
@@ -61,6 +63,16 @@ export class ProjectsComponent implements OnInit {
   getStatusLabel(status: string): string {
     const key = STATUS_KEYS[status];
     return key ? this.translate.instant(key) : status;
+  }
+
+  /** Etiqueta i18n de la categoria. */
+  getCategoryLabel(category: ProjectCategory): string {
+    return this.translate.instant('PROJECT_CATEGORY_' + category);
+  }
+
+  /** Titulo del proyecto en idioma activo. */
+  titleFor(project: Project): string {
+    return pickLocale(project.title, this.translate.currentLang || 'es');
   }
 
   getMainImage(project: Project): string {

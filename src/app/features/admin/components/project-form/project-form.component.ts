@@ -8,15 +8,20 @@ import {
   Validators
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
 import {
   Project,
+  ProjectCategory,
   ProjectCreateDto,
   ProjectImage,
   ProjectStatus,
   ProjectUpdateDto,
-  ProjectVideo
+  ProjectVideo,
+  PROJECT_CATEGORIES
 } from '../../../../models/project.model';
+import { LocalizedInputComponent } from '../../../../shared/components/localized-input/localized-input.component';
+import { isLocalizedEmpty, Localized } from '../../../../core/i18n/localized';
 
 interface PendingUpload {
   file: File;
@@ -45,7 +50,14 @@ const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
 @Component({
   selector: 'app-project-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    TranslateModule,
+    LocalizedInputComponent
+  ],
   templateUrl: './project-form.component.html',
   styleUrls: ['./project-form.component.scss']
 })
@@ -69,12 +81,17 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   isDraggingVideo = false;
   videoUploadError = '';
 
-  statusOptions = [
-    { value: ProjectStatus.IN_EXECUTION, label: 'En ejecución' },
-    { value: ProjectStatus.LICENSING_PHASE, label: 'Fase Licenciamiento' },
-    { value: ProjectStatus.PREVIOUS_STUDY, label: 'Fase Estudio-Previo' },
-    { value: ProjectStatus.COMPLETED, label: 'Completado' }
+  readonly statusOptions = [
+    { value: ProjectStatus.IN_EXECUTION, key: 'PROJECT_STATUS_IN_EXECUTION' },
+    { value: ProjectStatus.LICENSING_PHASE, key: 'PROJECT_STATUS_LICENSING_PHASE' },
+    { value: ProjectStatus.PREVIOUS_STUDY, key: 'PROJECT_STATUS_PREVIOUS_STUDY' },
+    { value: ProjectStatus.COMPLETED, key: 'PROJECT_STATUS_COMPLETED' }
   ];
+
+  readonly categoryOptions = PROJECT_CATEGORIES.map((cat) => ({
+    value: cat,
+    key: 'PROJECT_CATEGORY_' + cat
+  }));
 
   readonly imageAcceptAttr = ALLOWED_IMAGE_TYPES.join(',');
   readonly videoAcceptAttr = ALLOWED_VIDEO_TYPES.join(',');
@@ -86,14 +103,34 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     private projectService: ProjectService
   ) {
     this.projectForm = this.fb.group({
-      title: ['', [Validators.required]],
-      description: ['', [Validators.required]],
-      category: ['', [Validators.required]],
+      title: this.fb.control<Localized>(
+        { en: '', es: '', pt: '' },
+        { validators: [this.localizedRequiredValidator] }
+      ),
+      description: this.fb.control<Localized>(
+        { en: '', es: '', pt: '' },
+        { validators: [this.localizedRequiredValidator] }
+      ),
+      category: [ProjectCategory.RESIDENTIAL, [Validators.required]],
       status: [ProjectStatus.IN_EXECUTION, [Validators.required]],
       featured: [false],
       showInMenu: [true]
     });
   }
+
+  /**
+   * Validador para Localized: requiere al menos un idioma con texto. El idioma canonico
+   * de fallback es ingles (ver FALLBACK_LANG), pero permitimos cargar contenido aunque
+   * el ingles este vacio para no romper la edicion de proyectos migrados desde la
+   * version monolingue (que tienen solo "es").
+   */
+  private localizedRequiredValidator = (control: { value: Localized | null | undefined }) => {
+    const value = control.value;
+    if (!value || isLocalizedEmpty(value)) {
+      return { localizedRequired: true };
+    }
+    return null;
+  };
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -522,6 +559,15 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
       const removed = list.splice(idx, 1)[0];
       URL.revokeObjectURL(removed.previewUrl);
     }
+  }
+
+  /**
+   * Devuelve el titulo del video en el idioma canonico (ingles), con fallback al primer
+   * idioma con valor. Lo usa el grid del admin para mostrar una etiqueta corta sin tabs.
+   */
+  videoTitleLabel(video: ProjectVideo): string {
+    if (!video || !video.title) return '';
+    return video.title['en'] || video.title['es'] || video.title['pt'] || '';
   }
 
   private extractErrorMessage(err: unknown): string {

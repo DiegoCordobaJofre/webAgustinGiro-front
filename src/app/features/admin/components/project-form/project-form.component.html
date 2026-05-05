@@ -7,45 +7,38 @@
       </div>
 
       <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="project-form">
-        <div class="form-group">
-          <label for="title">Título *</label>
-          <input
-            type="text"
-            id="title"
-            formControlName="title"
-            class="form-input"
-            [class.error]="projectForm.get('title')?.invalid && projectForm.get('title')?.touched">
-        </div>
 
-        <div class="form-group">
-          <label for="description">Descripción *</label>
-          <textarea
-            id="description"
-            formControlName="description"
-            class="form-input form-textarea"
-            rows="5"
-            [class.error]="projectForm.get('description')?.invalid && projectForm.get('description')?.touched"></textarea>
-        </div>
+        <app-localized-input
+          formControlName="title"
+          label="Título"
+          [required]="true"
+          placeholder="Ingresa el título del proyecto">
+        </app-localized-input>
+
+        <app-localized-input
+          formControlName="description"
+          label="Descripción"
+          [required]="true"
+          [multiline]="true"
+          [rows]="6"
+          placeholder="Describe el proyecto">
+        </app-localized-input>
 
         <div class="form-row">
           <div class="form-group">
             <label for="category">Categoría *</label>
-            <input
-              type="text"
-              id="category"
-              formControlName="category"
-              class="form-input"
-              [class.error]="projectForm.get('category')?.invalid && projectForm.get('category')?.touched">
+            <select id="category" formControlName="category" class="form-input">
+              <option *ngFor="let opt of categoryOptions" [value]="opt.value">
+                {{ opt.key | translate }}
+              </option>
+            </select>
           </div>
 
           <div class="form-group">
             <label for="status">Estado *</label>
-            <select
-              id="status"
-              formControlName="status"
-              class="form-input">
-              <option *ngFor="let option of statusOptions" [value]="option.value">
-                {{ option.label }}
+            <select id="status" formControlName="status" class="form-input">
+              <option *ngFor="let opt of statusOptions" [value]="opt.value">
+                {{ opt.key | translate }}
               </option>
             </select>
           </div>
@@ -189,8 +182,8 @@
                   <span class="image-card__badge" *ngIf="video.isMain">Principal</span>
                 </div>
                 <div class="image-card__footer">
-                  <span class="image-card__name" [title]="video.title">
-                    {{ video.title || 'sin título' }}
+                  <span class="image-card__name" [title]="videoTitleLabel(video)">
+                    {{ videoTitleLabel(video) || 'sin título' }}
                   </span>
                   <button
                     type="button"

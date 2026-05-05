@@ -3,9 +3,9 @@
     <a routerLink="/proyectos" class="back-link">← {{ 'PROJECT_DETAIL_BACK' | translate }}</a>
     
     <div class="project-detail__header">
-      <h1 class="project-detail__title">{{ project.title }}</h1>
+      <h1 class="project-detail__title">{{ projectTitle }}</h1>
       <div class="project-detail__meta">
-        <span class="project-detail__category">{{ project.category }}</span>
+        <span class="project-detail__category">{{ getCategoryLabel(project.category) }}</span>
         <span class="project-detail__status">{{ getStatusLabel(project.status) }}</span>
       </div>
     </div>
@@ -42,7 +42,7 @@
     </div>
     
     <div class="project-detail__description">
-      <p>{{ project.description }}</p>
+      <p>{{ projectDescription }}</p>
     </div>
   </div>
 </div>

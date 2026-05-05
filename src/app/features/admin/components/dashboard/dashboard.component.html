@@ -47,13 +47,13 @@
           <tbody>
             <tr *ngFor="let project of projects">
               <td class="project-image">
-                <img 
-                  [src]="getProjectImage(project)" 
-                  [alt]="project.title"
+                <img
+                  [src]="getProjectImage(project)"
+                  [alt]="titleFor(project)"
                   class="project-thumbnail">
               </td>
-              <td class="project-title">{{ project.title }}</td>
-              <td>{{ project.category }}</td>
+              <td class="project-title">{{ titleFor(project) }}</td>
+              <td>{{ categoryLabelFor(project) }}</td>
               <td>
                 <span class="status-badge" [class.status-badge--active]="project.status === 'IN_EXECUTION'">
                   {{ getStatusLabel(project.status) }}

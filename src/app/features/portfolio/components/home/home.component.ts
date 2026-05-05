@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
-import { Project, ProjectStatus } from '../../../../models/project.model';
+import { Project, ProjectCategory } from '../../../../models/project.model';
+import { Localized, pickLocale } from '../../../../core/i18n/localized';
 
 const STATUS_KEYS: { [key: string]: string } = {
   'IN_EXECUTION': 'STATUS_IN_EXECUTION',
@@ -14,9 +15,9 @@ const STATUS_KEYS: { [key: string]: string } = {
 
 interface CarouselProject {
   id: number;
-  title: string;
-  description: string;
-  category: string;
+  title: Localized;
+  description: Localized;
+  category: ProjectCategory | null;
   status: string;
   image: string;
 }
@@ -59,7 +60,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         const featuredProjects = projects.filter(p => p.featured);
 
         if (featuredProjects.length > 0) {
-          // Usar proyectos reales del backend que estén marcados como featured
           this.carouselProjects = featuredProjects.slice(0, 5).map((p, index) => ({
             id: p.id || index + 1,
             title: p.title,
@@ -69,7 +69,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image
           }));
         } else {
-          // Proyectos de ejemplo con imágenes de casas
           this.carouselProjects = this.getExampleProjects();
         }
         this.isLoading = false;
@@ -86,37 +85,54 @@ export class HomeComponent implements OnInit, OnDestroy {
     return [
       {
         id: 1,
-        title: 'Casa Algarve',
-        description: 'Villa moderna. Diseño contemporáneo que integra espacios interiores y exteriores.',
-        category: 'Arquitectura',
-        status: 'En ejecución',
+        title: { es: 'Casa Algarve' },
+        description: { es: 'Villa moderna. Diseño contemporáneo que integra espacios interiores y exteriores.' },
+        category: ProjectCategory.RESIDENTIAL,
+        status: this.getStatusLabel('IN_EXECUTION'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
       },
       {
         id: 2,
-        title: 'Residencia Giró',
-        description: 'Casa tradicional portuguesa renovada con materiales locales. Patio interior y azulejos característicos del Algarve.',
-        category: 'Arquitectura',
-        status: 'Completado',
-        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg',
+        title: { es: 'Residencia Giró' },
+        description: { es: 'Casa tradicional portuguesa renovada con materiales locales. Patio interior y azulejos característicos del Algarve.' },
+        category: ProjectCategory.RESIDENTIAL,
+        status: this.getStatusLabel('COMPLETED'),
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg'
       },
       {
         id: 3,
-        title: 'Villa Camila Tyson',
-        description: 'Proyecto residencial con materiales locales. Integración con el paisaje natural del sur de Portugal.',
-        category: 'Arquitectura',
-        status: 'En ejecución',
+        title: { es: 'Villa Camila Tyson' },
+        description: { es: 'Proyecto residencial con materiales locales. Integración con el paisaje natural del sur de Portugal.' },
+        category: ProjectCategory.RESIDENTIAL,
+        status: this.getStatusLabel('IN_EXECUTION'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-5.jpg'
       },
       {
         id: 4,
-        title: 'Casa Ostra',
-        description: 'Casa tradicional italiana.',
-        category: 'Arquitectura',
-        status: 'En ejecución',
+        title: { es: 'Casa Ostra' },
+        description: { es: 'Casa tradicional italiana.' },
+        category: ProjectCategory.RESIDENTIAL,
+        status: this.getStatusLabel('IN_EXECUTION'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/cocina-ostra-1.jpg'
-      },
+      }
     ];
+  }
+
+  /** Texto del titulo en el idioma activo (con fallback a ES). */
+  titleFor(project: CarouselProject): string {
+    return pickLocale(project.title, this.translate.currentLang || 'es');
+  }
+
+  /** Texto de la descripcion en el idioma activo (con fallback a ES). */
+  descriptionFor(project: CarouselProject): string {
+    return pickLocale(project.description, this.translate.currentLang || 'es');
+  }
+
+  /** Etiqueta traducida de la categoria (PROJECT_CATEGORY_*). */
+  categoryLabelFor(project: CarouselProject): string {
+    if (!project.category) return '';
+    const key = 'PROJECT_CATEGORY_' + project.category;
+    return this.translate.instant(key);
   }
 
   private initializeCarousel(): void {

@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ProjectService } from '../../../../core/services/project.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Project, ProjectStatus } from '../../../../models/project.model';
+import { Project, ProjectCategory, ProjectStatus } from '../../../../models/project.model';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { pickLocale } from '../../../../core/i18n/localized';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -21,7 +23,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private projectService: ProjectService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -53,9 +56,9 @@ export class DashboardComponent implements OnInit {
     return [
       {
         id: 1,
-        title: 'Casa Algarve',
-        description: 'Villa moderna con piscina y vistas al mar. Diseño contemporáneo que integra espacios interiores y exteriores.',
-        category: 'Arquitectura',
+        title: { es: 'Casa Algarve' },
+        description: { es: 'Villa moderna con piscina y vistas al mar.' },
+        category: ProjectCategory.RESIDENTIAL,
         status: ProjectStatus.IN_EXECUTION,
         featured: true,
         showInMenu: true,
@@ -66,50 +69,25 @@ export class DashboardComponent implements OnInit {
           order: 0,
           isMain: true
         }]
-      },
-      {
-        id: 2,
-        title: 'Residencia Tavira',
-        description: 'Casa tradicional portuguesa renovada con materiales locales. Patio interior y azulejos característicos del Algarve.',
-        category: 'Arquitectura',
-        status: ProjectStatus.COMPLETED,
-        featured: true,
-        showInMenu: true,
-        images: [{
-          id: 2,
-          url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80',
-          alt: 'Residencia Tavira',
-          order: 0,
-          isMain: true
-        }]
-      },
-      {
-        id: 3,
-        title: 'Villa Lagos',
-        description: 'Proyecto residencial de lujo con arquitectura bioclimática. Integración con el paisaje natural del sur de Portugal.',
-        category: 'Arquitectura',
-        status: ProjectStatus.IN_EXECUTION,
-        featured: true,
-        showInMenu: true,
-        images: [{
-          id: 3,
-          url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80',
-          alt: 'Villa Lagos',
-          order: 0,
-          isMain: true
-        }]
       }
     ];
   }
 
+  /** Texto del titulo en idioma activo (ES como fallback). */
+  titleFor(project: Project): string {
+    return pickLocale(project.title, this.translate.currentLang || 'es');
+  }
+
+  /** Etiqueta i18n de la categoria. */
+  categoryLabelFor(project: Project): string {
+    if (!project.category) return '';
+    return this.translate.instant('PROJECT_CATEGORY_' + project.category);
+  }
+
   getStatusLabel(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'IN_EXECUTION': 'En ejecución',
-      'LICENSING_PHASE': 'Fase Licenciamiento',
-      'PREVIOUS_STUDY': 'Fase Estudio-Previo',
-      'COMPLETED': 'Completado'
-    };
-    return statusMap[status] || status;
+    const key = 'PROJECT_STATUS_' + status;
+    const translated = this.translate.instant(key);
+    return translated === key ? status : translated;
   }
 
   getProjectImage(project: Project): string {

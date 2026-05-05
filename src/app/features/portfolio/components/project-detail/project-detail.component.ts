@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
-import { Project } from '../../../../models/project.model';
+import { Project, ProjectCategory } from '../../../../models/project.model';
+import { pickLocale } from '../../../../core/i18n/localized';
 
 const STATUS_KEYS: { [key: string]: string } = {
   'IN_EXECUTION': 'STATUS_IN_EXECUTION',
@@ -77,6 +78,22 @@ export class ProjectDetailComponent implements OnInit {
   getStatusLabel(status: string): string {
     const key = STATUS_KEYS[status];
     return key ? this.translate.instant(key) : status;
+  }
+
+  /** Etiqueta i18n para la categoria del proyecto. */
+  getCategoryLabel(category: ProjectCategory | null | undefined): string {
+    if (!category) return '';
+    return this.translate.instant('PROJECT_CATEGORY_' + category);
+  }
+
+  /** Titulo en idioma activo. */
+  get projectTitle(): string {
+    return this.project ? pickLocale(this.project.title, this.translate.currentLang || 'es') : '';
+  }
+
+  /** Descripcion en idioma activo. */
+  get projectDescription(): string {
+    return this.project ? pickLocale(this.project.description, this.translate.currentLang || 'es') : '';
   }
 }
 
