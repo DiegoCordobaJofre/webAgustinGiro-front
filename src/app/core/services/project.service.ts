@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, ProjectCreateDto, ProjectUpdateDto } from '../../models/project.model';
+import {
+  Project,
+  ProjectCreateDto,
+  ProjectImage,
+  ProjectUpdateDto
+} from '../../models/project.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -32,10 +37,33 @@ export class ProjectService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  uploadImage(projectId: number, file: File): Observable<string> {
+  /**
+   * Sube una imagen asociada a un proyecto. El backend la guarda en Cloudflare R2
+   * y persiste el metadata. Devuelve la imagen ya creada (con id y url publica de R2).
+   */
+  uploadImage(
+    projectId: number,
+    file: File,
+    options: { alt?: string; isMain?: boolean } = {}
+  ): Observable<ProjectImage> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<string>(`${this.apiUrl}/${projectId}/images`, formData);
+    if (options.alt) {
+      formData.append('alt', options.alt);
+    }
+    if (typeof options.isMain === 'boolean') {
+      formData.append('isMain', String(options.isMain));
+    }
+    return this.http.post<ProjectImage>(
+      `${this.apiUrl}/${projectId}/images`,
+      formData
+    );
+  }
+
+  deleteImage(projectId: number, imageId: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${projectId}/images/${imageId}`
+    );
   }
 }
 

@@ -5,43 +5,43 @@
         <h1>{{ isEditMode ? 'Editar Proyecto' : 'Nuevo Proyecto' }}</h1>
         <a routerLink="/admin/dashboard" class="btn">Cancelar</a>
       </div>
-      
+
       <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="project-form">
         <div class="form-group">
           <label for="title">Título *</label>
-          <input 
-            type="text" 
-            id="title" 
+          <input
+            type="text"
+            id="title"
             formControlName="title"
             class="form-input"
             [class.error]="projectForm.get('title')?.invalid && projectForm.get('title')?.touched">
         </div>
-        
+
         <div class="form-group">
           <label for="description">Descripción *</label>
-          <textarea 
-            id="description" 
+          <textarea
+            id="description"
             formControlName="description"
             class="form-input form-textarea"
             rows="5"
             [class.error]="projectForm.get('description')?.invalid && projectForm.get('description')?.touched"></textarea>
         </div>
-        
+
         <div class="form-row">
           <div class="form-group">
             <label for="category">Categoría *</label>
-            <input 
-              type="text" 
-              id="category" 
+            <input
+              type="text"
+              id="category"
               formControlName="category"
               class="form-input"
               [class.error]="projectForm.get('category')?.invalid && projectForm.get('category')?.touched">
           </div>
-          
+
           <div class="form-group">
             <label for="status">Estado *</label>
-            <select 
-              id="status" 
+            <select
+              id="status"
               formControlName="status"
               class="form-input">
               <option *ngFor="let option of statusOptions" [value]="option.value">
@@ -50,88 +50,128 @@
             </select>
           </div>
         </div>
-        
+
         <div class="form-section">
           <h3>Visibilidad</h3>
           <div class="form-checkboxes">
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                formControlName="featured">
+              <input type="checkbox" formControlName="featured">
               <span>Mostrar en página principal (carrusel)</span>
             </label>
-            
+
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                formControlName="showInMenu">
+              <input type="checkbox" formControlName="showInMenu">
               <span>Mostrar en menú "Proyectos"</span>
             </label>
           </div>
         </div>
-        
+
         <div class="form-section">
           <div class="form-section__header">
             <h3>Imágenes</h3>
-            <button type="button" class="btn btn--small" (click)="addNewImage()">Agregar Imagen</button>
+            <span class="form-section__hint">JPG, PNG, WEBP o GIF · máx 10 MB</span>
           </div>
-          
-          <div formArrayName="images" class="images-list">
-            <div 
-              *ngFor="let image of imagesFormArray.controls; let i = index" 
-              [formGroupName]="i"
-              class="image-item">
-              <div class="image-item__fields">
-                <div class="form-group">
-                  <label>URL de la imagen *</label>
-                  <input 
-                    type="text" 
-                    formControlName="url"
-                    class="form-input"
-                    placeholder="https://example.com/image.jpg">
+
+          <ng-container *ngIf="isEditMode && existingImages.length > 0">
+            <h4 class="images-subtitle">Imágenes actuales</h4>
+            <div class="images-grid">
+              <div
+                *ngFor="let image of existingImages"
+                class="image-card"
+                [class.image-card--main]="image.isMain">
+                <div class="image-card__thumb">
+                  <img [src]="image.url" [alt]="image.alt || ''">
+                  <span class="image-card__badge" *ngIf="image.isMain">Principal</span>
                 </div>
-                
-                <div class="form-group">
-                  <label>Texto alternativo *</label>
-                  <input 
-                    type="text" 
-                    formControlName="alt"
-                    class="form-input"
-                    placeholder="Descripción de la imagen">
-                </div>
-                
-                <div class="form-group">
-                  <label>Orden</label>
-                  <input 
-                    type="number" 
-                    formControlName="order"
-                    class="form-input">
-                </div>
-                
-                <div class="form-group">
-                  <label class="checkbox-label">
-                    <input 
-                      type="checkbox" 
-                      formControlName="isMain"
-                      (change)="setMainImage(i)">
-                    Imagen principal
-                  </label>
+                <div class="image-card__footer">
+                  <span class="image-card__name" [title]="image.alt">
+                    {{ image.alt || 'sin descripción' }}
+                  </span>
+                  <button
+                    type="button"
+                    class="btn btn--small btn--danger"
+                    (click)="deleteExistingImage(image)">
+                    Eliminar
+                  </button>
                 </div>
               </div>
-              
-              <button 
-                type="button" 
-                class="btn btn--danger btn--small"
-                (click)="removeImage(i)">
-                Eliminar
-              </button>
+            </div>
+          </ng-container>
+
+          <h4 class="images-subtitle" *ngIf="isEditMode">Subir nuevas imágenes</h4>
+
+          <label class="dropzone"
+                 [class.dropzone--active]="isDragging"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 (drop)="onDrop($event)">
+            <input
+              type="file"
+              [accept]="acceptAttr"
+              multiple
+              (change)="onFileInput($event)"
+              hidden>
+            <div class="dropzone__content">
+              <strong>Arrastra imágenes aquí</strong>
+              <span>o haz clic para seleccionar desde tu equipo</span>
+            </div>
+          </label>
+
+          <label class="checkbox-label main-toggle" *ngIf="isEditMode">
+            <input type="checkbox" [(ngModel)]="nextUploadIsMain" [ngModelOptions]="{standalone: true}">
+            <span>La próxima imagen que suba será la principal</span>
+          </label>
+
+          <p class="form-error" *ngIf="uploadError">{{ uploadError }}</p>
+
+          <div class="images-grid" *ngIf="pendingUploads.length > 0">
+            <h4 class="images-subtitle images-subtitle--full" *ngIf="!isEditMode">
+              En cola para subir al guardar
+            </h4>
+            <div
+              *ngFor="let pending of pendingUploads; let i = index"
+              class="image-card image-card--pending"
+              [class.image-card--main]="pending.isMain">
+              <div class="image-card__thumb">
+                <img [src]="pending.previewUrl" [alt]="pending.file.name">
+                <span class="image-card__badge" *ngIf="pending.isMain">Principal</span>
+                <span class="image-card__badge image-card__badge--info" *ngIf="pending.uploading">
+                  Subiendo...
+                </span>
+                <span class="image-card__badge image-card__badge--error" *ngIf="pending.error">
+                  Error
+                </span>
+              </div>
+              <div class="image-card__footer">
+                <span class="image-card__name" [title]="pending.file.name">
+                  {{ pending.file.name }}
+                </span>
+                <div class="image-card__actions">
+                  <button
+                    *ngIf="!isEditMode"
+                    type="button"
+                    class="btn btn--small"
+                    [class.btn--primary]="pending.isMain"
+                    (click)="setPendingMain(i)">
+                    {{ pending.isMain ? 'Principal' : 'Marcar principal' }}
+                  </button>
+                  <button
+                    *ngIf="!pending.uploading"
+                    type="button"
+                    class="btn btn--small btn--danger"
+                    (click)="removePendingUpload(i)">
+                    Quitar
+                  </button>
+                </div>
+                <p class="form-error" *ngIf="pending.error">{{ pending.error }}</p>
+              </div>
             </div>
           </div>
         </div>
-        
+
         <div class="form-actions">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             class="btn btn--primary"
             [disabled]="projectForm.invalid || isLoading">
             {{ isLoading ? 'Guardando...' : (isEditMode ? 'Actualizar' : 'Crear') }}
@@ -141,6 +181,3 @@
     </div>
   </div>
 </div>
-
-
-
