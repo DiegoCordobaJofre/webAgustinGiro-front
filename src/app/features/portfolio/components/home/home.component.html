@@ -1,15 +1,19 @@
 <section class="projects-carousel" *ngIf="!isLoading && carouselProjects.length > 0">
   <div class="carousel-container">
     <div class="carousel-slides" [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
-      <div 
-        class="carousel-slide" 
-        *ngFor="let project of carouselProjects"
-        [style.background-image]="'url(' + project.image + ')'">
+      <div
+        class="carousel-slide"
+        *ngFor="let project of carouselProjects">
+        <img
+          class="carousel-slide__image"
+          [src]="project.image"
+          [alt]="titleFor(project)"
+          loading="lazy">
         <div class="carousel-slide__overlay"></div>
         <div class="carousel-slide__content" [routerLink]="['/proyectos', project.id]">
           <div class="carousel-slide__info">
             <h2 class="carousel-slide__title">{{ titleFor(project) }}</h2>
-            <p class="carousel-slide__description">{{ descriptionFor(project) }}</p>
+            <p class="carousel-slide__subtitle" *ngIf="subtitleFor(project)">{{ subtitleFor(project) }}</p>
             <div class="carousel-slide__meta">
               <span class="carousel-slide__category">{{ categoryLabelFor(project) }}</span>
               <span class="carousel-slide__status">{{ project.status }}</span>
@@ -18,7 +22,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Navigation arrows -->
     <button class="carousel-nav carousel-nav--prev" (click)="previousSlide()" [attr.aria-label]="'HOME_PREV_PROJECT' | translate">
       ‹
@@ -26,10 +30,10 @@
     <button class="carousel-nav carousel-nav--next" (click)="nextSlide()" [attr.aria-label]="'HOME_NEXT_PROJECT' | translate">
       ›
     </button>
-    
+
     <!-- Dots indicator -->
     <div class="carousel-dots">
-      <button 
+      <button
         *ngFor="let project of carouselProjects; let i = index"
         class="carousel-dot"
         [class.carousel-dot--active]="i === currentSlide"
@@ -45,5 +49,3 @@
     <p>{{ 'HOME_LOADING' | translate }}</p>
   </div>
 </div>
-
-

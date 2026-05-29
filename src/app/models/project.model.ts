@@ -3,6 +3,11 @@ import { Localized } from '../core/i18n/localized';
 export interface Project {
   id?: number;
   title: Localized;
+  /**
+   * Subtitulo corto opcional. Se usa en el carrusel del home como linea breve
+   * debajo del titulo, en lugar de la descripcion completa.
+   */
+  subtitle?: Localized;
   description: Localized;
   category: ProjectCategory;
   status: ProjectStatus;
@@ -62,6 +67,7 @@ export const PROJECT_CATEGORIES: ProjectCategory[] = [
 
 export interface ProjectCreateDto {
   title: Localized;
+  subtitle?: Localized;
   description: Localized;
   category: ProjectCategory;
   status: ProjectStatus;
@@ -79,6 +85,7 @@ export interface ProjectImageCreateDto {
 
 export interface ProjectUpdateDto {
   title?: Localized;
+  subtitle?: Localized;
   description?: Localized;
   category?: ProjectCategory;
   status?: ProjectStatus;

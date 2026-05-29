@@ -107,6 +107,9 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
         { en: '', es: '', pt: '' },
         { validators: [this.localizedRequiredValidator] }
       ),
+      subtitle: this.fb.control<Localized>(
+        { en: '', es: '', pt: '' }
+      ),
       description: this.fb.control<Localized>(
         { en: '', es: '', pt: '' },
         { validators: [this.localizedRequiredValidator] }
@@ -159,6 +162,7 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
   private applyProject(project: Project): void {
     this.projectForm.patchValue({
       title: project.title,
+      subtitle: project.subtitle ?? { en: '', es: '', pt: '' },
       description: project.description,
       category: project.category,
       status: project.status,

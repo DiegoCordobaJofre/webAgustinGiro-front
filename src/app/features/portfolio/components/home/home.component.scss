@@ -4,6 +4,7 @@
   height: 85vh;
   min-height: 600px;
   overflow: hidden;
+  background: #0a0a0a;
 }
 
 .carousel-container {
@@ -22,78 +23,99 @@
 .carousel-slide {
   min-width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   position: relative;
   display: flex;
   align-items: flex-end;
-  
+  background: #0a0a0a;
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+  }
+
   &__overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, transparent 100%);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.25) 35%, transparent 65%);
+    pointer-events: none;
   }
-  
+
   &__content {
     position: relative;
     z-index: 2;
     width: 100%;
     padding: var(--spacing-xl);
     padding-bottom: var(--spacing-lg);
+    display: flex;
+    justify-content: center;
     cursor: pointer;
     transition: opacity var(--transition-base);
-    
+
     &:hover {
       opacity: 0.9;
     }
-    
+
     @media (max-width: 768px) {
       padding: var(--spacing-md);
+      padding-bottom: var(--spacing-md);
     }
   }
-  
+
   &__info {
     max-width: 600px;
     color: var(--color-white);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  
+
   &__title {
-    font-size: 3rem;
-    font-weight: 400;
-    margin-bottom: var(--spacing-sm);
+    font-size: 2.25rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--spacing-xs);
     color: var(--color-white);
     line-height: 1.2;
-    
+    text-align: center;
+
     @media (max-width: 768px) {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
   }
-  
-  &__description {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    margin-bottom: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.95);
-    max-width: 500px;
-    
+
+  &__subtitle {
+    font-size: 0.95rem;
+    font-weight: 300;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-sm);
+    color: rgba(255, 255, 255, 0.92);
+    max-width: 520px;
+    text-align: center;
+
     @media (max-width: 768px) {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
     }
   }
-  
+
   &__meta {
     display: flex;
+    justify-content: center;
     gap: var(--spacing-md);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: rgba(255, 255, 255, 0.8);
   }
-  
+
   &__category {
     &::after {
       content: ' | ';
@@ -123,24 +145,24 @@
   &:hover {
     color: rgba(255, 255, 255, 0.75);
   }
-  
+
   &--prev {
     left: var(--spacing-md);
   }
-  
+
   &--next {
     right: var(--spacing-md);
   }
-  
+
   @media (max-width: 768px) {
     width: 40px;
     height: 40px;
     font-size: 2rem;
-    
+
     &--prev {
       left: var(--spacing-xs);
     }
-    
+
     &--next {
       right: var(--spacing-xs);
     }
@@ -170,11 +192,11 @@
   cursor: pointer;
   transition: all var(--transition-base);
   padding: 0;
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.5);
   }
-  
+
   &--active {
     background: var(--color-white);
   }
@@ -189,5 +211,3 @@
   align-items: center;
   justify-content: center;
 }
-
-

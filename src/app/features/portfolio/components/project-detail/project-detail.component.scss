@@ -22,7 +22,15 @@
 .project-detail__title {
   font-size: 2.5rem;
   font-weight: 300;
+  margin-bottom: var(--spacing-xs);
+}
+
+.project-detail__subtitle {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--color-text-light);
   margin-bottom: var(--spacing-sm);
+  max-width: 720px;
 }
 
 .project-detail__meta {
@@ -119,11 +127,85 @@
 .project-detail__description {
   max-width: 800px;
   margin: 0 auto;
-  
+
   p {
     font-size: 1.1rem;
     line-height: 1.8;
     color: var(--color-text);
+    white-space: pre-line;
+  }
+}
+
+.project-detail__videos {
+  margin-top: var(--spacing-xl);
+}
+
+.project-detail__videos-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.video-main {
+  width: 80%;
+  max-width: 900px;
+  margin: 0 auto var(--spacing-md) auto;
+  background: #000;
+  border: 8px solid var(--color-white);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+
+  &__player {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    display: block;
+    background: #000;
+  }
+}
+
+.video-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+.video-thumbnail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+
+  &--active {
+    background: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+  }
+
+  &__play {
+    font-size: 0.7rem;
+    line-height: 1;
+  }
+
+  &__label {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -158,9 +240,18 @@
     height: 280px;
     border-width: 4px;
   }
-  
-  .project-detail__header__title {
+
+  .project-detail__title {
     font-size: 1.8rem;
+  }
+
+  .project-detail__subtitle {
+    font-size: 0.95rem;
+  }
+
+  .video-main {
+    width: 100%;
+    border-width: 4px;
   }
 }
 

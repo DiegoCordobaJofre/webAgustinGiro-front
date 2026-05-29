@@ -1,37 +1,38 @@
 <div class="project-detail" *ngIf="!isLoading && project">
   <div class="container">
     <a routerLink="/proyectos" class="back-link">← {{ 'PROJECT_DETAIL_BACK' | translate }}</a>
-    
+
     <div class="project-detail__header">
       <h1 class="project-detail__title">{{ projectTitle }}</h1>
+      <p class="project-detail__subtitle" *ngIf="projectSubtitle">{{ projectSubtitle }}</p>
       <div class="project-detail__meta">
         <span class="project-detail__category">{{ getCategoryLabel(project.category) }}</span>
         <span class="project-detail__status">{{ getStatusLabel(project.status) }}</span>
       </div>
     </div>
-    
+
     <div class="project-detail__gallery" *ngIf="project.images && project.images.length > 0">
       <div class="gallery-main">
-        <img 
-          [src]="project.images[currentImageIndex].url" 
+        <img
+          [src]="project.images[currentImageIndex].url"
           [alt]="project.images[currentImageIndex].alt"
           class="gallery-main__image">
-        <button 
-          class="gallery-nav gallery-nav--prev" 
+        <button
+          class="gallery-nav gallery-nav--prev"
           (click)="previousImage()"
           *ngIf="project.images.length > 1">
           ‹
         </button>
-        <button 
-          class="gallery-nav gallery-nav--next" 
+        <button
+          class="gallery-nav gallery-nav--next"
           (click)="nextImage()"
           *ngIf="project.images.length > 1">
           ›
         </button>
       </div>
-      
+
       <div class="gallery-thumbnails" *ngIf="project.images.length > 1">
-        <button 
+        <button
           *ngFor="let image of project.images; let i = index"
           class="gallery-thumbnail"
           [class.gallery-thumbnail--active]="i === currentImageIndex"
@@ -40,9 +41,37 @@
         </button>
       </div>
     </div>
-    
+
     <div class="project-detail__description">
       <p>{{ projectDescription }}</p>
+    </div>
+
+    <div class="project-detail__videos" *ngIf="project.videos && project.videos.length > 0">
+      <h2 class="project-detail__videos-title">{{ 'PROJECT_DETAIL_VIDEOS' | translate }}</h2>
+
+      <div class="video-main">
+        <video
+          [src]="currentVideo?.url"
+          [poster]="videoPoster"
+          controls
+          preload="metadata"
+          playsinline
+          class="video-main__player">
+          {{ 'PROJECT_DETAIL_VIDEO_UNSUPPORTED' | translate }}
+        </video>
+      </div>
+
+      <div class="video-thumbnails" *ngIf="project.videos.length > 1">
+        <button
+          *ngFor="let video of project.videos; let i = index"
+          class="video-thumbnail"
+          [class.video-thumbnail--active]="i === currentVideoIndex"
+          (click)="goToVideo(i)"
+          [attr.aria-label]="videoTitleLabel(video)">
+          <span class="video-thumbnail__play">▶</span>
+          <span class="video-thumbnail__label">{{ videoTitleLabel(video) || ('PROJECT_DETAIL_VIDEO' | translate) + ' ' + (i + 1) }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -62,10 +91,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
-

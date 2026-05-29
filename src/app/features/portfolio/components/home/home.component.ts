@@ -16,7 +16,7 @@ const STATUS_KEYS: { [key: string]: string } = {
 interface CarouselProject {
   id: number;
   title: Localized;
-  description: Localized;
+  subtitle: Localized;
   category: ProjectCategory | null;
   status: string;
   image: string;
@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.carouselProjects = featuredProjects.slice(0, 5).map((p, index) => ({
             id: p.id || index + 1,
             title: p.title,
-            description: p.description,
+            subtitle: p.subtitle ?? {},
             category: p.category,
             status: this.getStatusLabel(p.status as string),
             image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image
@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       {
         id: 1,
         title: { es: 'Casa Algarve' },
-        description: { es: 'Villa moderna. Diseño contemporáneo que integra espacios interiores y exteriores.' },
+        subtitle: { es: 'Villa moderna en Aljezur' },
         category: ProjectCategory.RESIDENTIAL,
         status: this.getStatusLabel('IN_EXECUTION'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
@@ -94,7 +94,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       {
         id: 2,
         title: { es: 'Residencia Giró' },
-        description: { es: 'Casa tradicional portuguesa renovada con materiales locales. Patio interior y azulejos característicos del Algarve.' },
+        subtitle: { es: 'Casa tradicional portuguesa renovada' },
         category: ProjectCategory.RESIDENTIAL,
         status: this.getStatusLabel('COMPLETED'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg'
@@ -102,7 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       {
         id: 3,
         title: { es: 'Villa Camila Tyson' },
-        description: { es: 'Proyecto residencial con materiales locales. Integración con el paisaje natural del sur de Portugal.' },
+        subtitle: { es: 'Residencial integrado al paisaje del sur de Portugal' },
         category: ProjectCategory.RESIDENTIAL,
         status: this.getStatusLabel('IN_EXECUTION'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-5.jpg'
@@ -110,7 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       {
         id: 4,
         title: { es: 'Casa Ostra' },
-        description: { es: 'Casa tradicional italiana.' },
+        subtitle: { es: 'Casa tradicional italiana' },
         category: ProjectCategory.RESIDENTIAL,
         status: this.getStatusLabel('IN_EXECUTION'),
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/cocina-ostra-1.jpg'
@@ -123,9 +123,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     return pickLocale(project.title, this.translate.currentLang || 'es');
   }
 
-  /** Texto de la descripcion en el idioma activo (con fallback a ES). */
-  descriptionFor(project: CarouselProject): string {
-    return pickLocale(project.description, this.translate.currentLang || 'es');
+  /**
+   * Subtitulo corto en el idioma activo. Devuelve '' si el proyecto no tiene subtitulo,
+   * para que la plantilla pueda ocultarlo con *ngIf.
+   */
+  subtitleFor(project: CarouselProject): string {
+    return pickLocale(project.subtitle, this.translate.currentLang || 'es');
   }
 
   /** Etiqueta traducida de la categoria (PROJECT_CATEGORY_*). */
