@@ -15,8 +15,12 @@
             <h2 class="carousel-slide__title">{{ titleFor(project) }}</h2>
             <p class="carousel-slide__subtitle" *ngIf="subtitleFor(project)">{{ subtitleFor(project) }}</p>
             <div class="carousel-slide__meta">
-              <span class="carousel-slide__category">{{ categoryLabelFor(project) }}</span>
-              <span class="carousel-slide__status">{{ project.status }}</span>
+              <span class="carousel-slide__category" *ngIf="project.category">
+                {{ ('PROJECT_CATEGORY_' + project.category) | translate }}
+              </span>
+              <span class="carousel-slide__status" *ngIf="project.status">
+                {{ ('STATUS_' + project.status) | translate }}
+              </span>
             </div>
           </div>
         </div>

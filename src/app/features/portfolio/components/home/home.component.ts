@@ -6,18 +6,16 @@ import { ProjectService } from '../../../../core/services/project.service';
 import { Project, ProjectCategory } from '../../../../models/project.model';
 import { Localized, pickLocale } from '../../../../core/i18n/localized';
 
-const STATUS_KEYS: { [key: string]: string } = {
-  'IN_EXECUTION': 'STATUS_IN_EXECUTION',
-  'LICENSING_PHASE': 'STATUS_LICENSING_PHASE',
-  'PREVIOUS_STUDY': 'STATUS_PREVIOUS_STUDY',
-  'COMPLETED': 'STATUS_COMPLETED'
-};
-
 interface CarouselProject {
   id: number;
   title: Localized;
   subtitle: Localized;
   category: ProjectCategory | null;
+  /**
+   * Estado crudo del proyecto (clave de enum: 'IN_EXECUTION', 'COMPLETED', etc.).
+   * El template lo traduce con el pipe `| translate` para que reaccione al cambio de idioma.
+   * Antes guardabamos aca el label ya traducido y eso cacheaba el idioma original.
+   */
   status: string;
   image: string;
 }
@@ -65,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             title: p.title,
             subtitle: p.subtitle ?? {},
             category: p.category,
-            status: this.getStatusLabel(p.status as string),
+            status: (p.status as string) || '',
             image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image
           }));
         } else {
@@ -88,7 +86,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         title: { es: 'Casa Algarve' },
         subtitle: { es: 'Villa moderna en Aljezur' },
         category: ProjectCategory.RESIDENTIAL,
-        status: this.getStatusLabel('IN_EXECUTION'),
+        status: 'IN_EXECUTION',
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
       },
       {
@@ -96,7 +94,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         title: { es: 'Residencia Giró' },
         subtitle: { es: 'Casa tradicional portuguesa renovada' },
         category: ProjectCategory.RESIDENTIAL,
-        status: this.getStatusLabel('COMPLETED'),
+        status: 'COMPLETED',
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg'
       },
       {
@@ -104,7 +102,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         title: { es: 'Villa Camila Tyson' },
         subtitle: { es: 'Residencial integrado al paisaje del sur de Portugal' },
         category: ProjectCategory.RESIDENTIAL,
-        status: this.getStatusLabel('IN_EXECUTION'),
+        status: 'IN_EXECUTION',
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-5.jpg'
       },
       {
@@ -112,13 +110,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         title: { es: 'Casa Ostra' },
         subtitle: { es: 'Casa tradicional italiana' },
         category: ProjectCategory.RESIDENTIAL,
-        status: this.getStatusLabel('IN_EXECUTION'),
+        status: 'IN_EXECUTION',
         image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/cocina-ostra-1.jpg'
       }
     ];
   }
 
-  /** Texto del titulo en el idioma activo (con fallback a ES). */
+  /** Texto del titulo en el idioma activo (con fallback). */
   titleFor(project: CarouselProject): string {
     return pickLocale(project.title, this.translate.currentLang || 'es');
   }
@@ -129,13 +127,6 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   subtitleFor(project: CarouselProject): string {
     return pickLocale(project.subtitle, this.translate.currentLang || 'es');
-  }
-
-  /** Etiqueta traducida de la categoria (PROJECT_CATEGORY_*). */
-  categoryLabelFor(project: CarouselProject): string {
-    if (!project.category) return '';
-    const key = 'PROJECT_CATEGORY_' + project.category;
-    return this.translate.instant(key);
   }
 
   private initializeCarousel(): void {
@@ -162,11 +153,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       clearInterval(this.autoSlideInterval);
     }
     this.initializeCarousel();
-  }
-
-  getStatusLabel(status: string): string {
-    const key = STATUS_KEYS[status];
-    return key ? this.translate.instant(key) : status;
   }
 
   getMainImage(project: Project): string {

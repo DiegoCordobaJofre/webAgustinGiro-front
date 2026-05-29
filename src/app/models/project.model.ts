@@ -51,6 +51,7 @@ export enum ProjectCategory {
   URBANISM = 'URBANISM',
   RENOVATION = 'RENOVATION',
   LANDSCAPE = 'LANDSCAPE',
+  COLLABORATION = 'COLLABORATION',
   OTHER = 'OTHER'
 }
 
@@ -62,6 +63,7 @@ export const PROJECT_CATEGORIES: ProjectCategory[] = [
   ProjectCategory.URBANISM,
   ProjectCategory.RENOVATION,
   ProjectCategory.LANDSCAPE,
+  ProjectCategory.COLLABORATION,
   ProjectCategory.OTHER
 ];
 

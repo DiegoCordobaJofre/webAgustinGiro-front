@@ -6,13 +6,6 @@ import { ProjectService } from '../../../../core/services/project.service';
 import { Project, ProjectCategory } from '../../../../models/project.model';
 import { pickLocale } from '../../../../core/i18n/localized';
 
-const STATUS_KEYS: { [key: string]: string } = {
-  'IN_EXECUTION': 'STATUS_IN_EXECUTION',
-  'LICENSING_PHASE': 'STATUS_LICENSING_PHASE',
-  'PREVIOUS_STUDY': 'STATUS_PREVIOUS_STUDY',
-  'COMPLETED': 'STATUS_COMPLETED'
-};
-
 @Component({
   selector: 'app-projects',
   standalone: true,
@@ -58,16 +51,6 @@ export class ProjectsComponent implements OnInit {
       return this.projects;
     }
     return this.projects.filter(p => p.category === this.selectedCategory);
-  }
-
-  getStatusLabel(status: string): string {
-    const key = STATUS_KEYS[status];
-    return key ? this.translate.instant(key) : status;
-  }
-
-  /** Etiqueta i18n de la categoria. */
-  getCategoryLabel(category: ProjectCategory): string {
-    return this.translate.instant('PROJECT_CATEGORY_' + category);
   }
 
   /** Titulo del proyecto en idioma activo. */

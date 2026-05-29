@@ -3,15 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
-import { Project, ProjectCategory, ProjectVideo } from '../../../../models/project.model';
+import { Project, ProjectVideo } from '../../../../models/project.model';
 import { pickLocale } from '../../../../core/i18n/localized';
-
-const STATUS_KEYS: { [key: string]: string } = {
-  'IN_EXECUTION': 'STATUS_IN_EXECUTION',
-  'LICENSING_PHASE': 'STATUS_LICENSING_PHASE',
-  'PREVIOUS_STUDY': 'STATUS_PREVIOUS_STUDY',
-  'COMPLETED': 'STATUS_COMPLETED'
-};
 
 @Component({
   selector: 'app-project-detail',
@@ -111,17 +104,6 @@ export class ProjectDetailComponent implements OnInit {
   videoTitleLabel(video: ProjectVideo): string {
     if (!video?.title) return '';
     return pickLocale(video.title, this.translate.currentLang || 'es');
-  }
-
-  getStatusLabel(status: string): string {
-    const key = STATUS_KEYS[status];
-    return key ? this.translate.instant(key) : status;
-  }
-
-  /** Etiqueta i18n para la categoria del proyecto. */
-  getCategoryLabel(category: ProjectCategory | null | undefined): string {
-    if (!category) return '';
-    return this.translate.instant('PROJECT_CATEGORY_' + category);
   }
 
   /** Titulo en idioma activo. */

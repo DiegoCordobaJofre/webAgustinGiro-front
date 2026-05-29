@@ -12,7 +12,7 @@
         class="filter-btn"
         [class.filter-btn--active]="selectedCategory === category"
         (click)="filterByCategory(category)">
-        {{ getCategoryLabel(category) }}
+        {{ ('PROJECT_CATEGORY_' + category) | translate }}
       </button>
     </div>
 
@@ -23,7 +23,9 @@
         </div>
         <div class="project-card__content">
           <h3 class="project-card__title">{{ titleFor(project) }}</h3>
-          <span class="project-card__status">{{ getStatusLabel(project.status) }}</span>
+          <span class="project-card__status" *ngIf="project.status">
+            {{ ('STATUS_' + project.status) | translate }}
+          </span>
         </div>
       </article>
     </div>

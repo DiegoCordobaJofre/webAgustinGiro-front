@@ -1,13 +1,13 @@
 .localized-input {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--spacing-xs);
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: var(--spacing-xs);
     flex-wrap: wrap;
   }
 
@@ -16,24 +16,34 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-text);
+    font-family: var(--font-primary);
   }
 
   &__tabs {
     display: flex;
     gap: 4px;
     border-bottom: 1px solid var(--color-border);
+    margin-bottom: 2px;
   }
 
   &__tab {
-    padding: 6px 12px;
+    padding: 6px 14px;
     background: transparent;
     border: none;
     border-bottom: 2px solid transparent;
-    color: var(--color-text);
+    color: var(--color-text-light);
     cursor: pointer;
-    font-size: 0.85rem;
-    letter-spacing: 0.06em;
+    font-family: var(--font-primary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     margin-bottom: -1px;
+    transition: color var(--transition-base), border-color var(--transition-base);
+
+    &:hover {
+      color: var(--color-text);
+    }
 
     &--filled::after {
       content: '';
@@ -51,6 +61,56 @@
       color: var(--color-primary, #0b3d2e);
     }
   }
+}
+
+// Estilos para los inputs del LocalizedInput. Estaban definidos en project-form.scss
+// pero como este es un componente standalone con view encapsulation por defecto, las
+// reglas del padre no llegan: hay que repetirlos aca.
+.form-input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  color: var(--color-text);
+  line-height: 1.5;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: var(--color-text-light);
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(11, 61, 46, 0.08);
+  }
+
+  &.error {
+    border-color: #d32f2f;
+  }
+
+  &[disabled] {
+    background: var(--color-accent);
+    color: var(--color-text-light);
+    cursor: not-allowed;
+  }
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 140px;
+  font-family: var(--font-primary);
+}
+
+.form-error {
+  margin: var(--spacing-xs) 0 0;
+  color: #d32f2f;
+  font-size: 0.85rem;
+  font-family: var(--font-primary);
 }
 
 .btn--ghost {
