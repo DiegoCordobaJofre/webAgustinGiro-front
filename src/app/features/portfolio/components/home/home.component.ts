@@ -35,7 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   carouselProjects: CarouselProject[] = [];
   currentSlide = 0;
   isLoading = true;
-  private autoSlideInterval: any;
+  private autoSlideInterval: ReturnType<typeof setInterval> | null = null;
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private readonly swipeThresholdPx = 50;
 
   constructor(
     private projectService: ProjectService,
@@ -45,13 +48,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCarousel();
-    this.initializeCarousel();
   }
 
   ngOnDestroy(): void {
-    if (this.autoSlideInterval) {
-      clearInterval(this.autoSlideInterval);
-    }
+    this.stopAutoSlide();
   }
 
   /**
@@ -73,6 +73,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             grayscale: !!item.grayscale
           }));
           this.isLoading = false;
+          this.restartAutoSlide();
         } else {
           this.loadFeaturedProjects();
         }
@@ -102,11 +103,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.carouselProjects = this.getExampleProjects();
         }
         this.isLoading = false;
+        this.restartAutoSlide();
       },
       error: () => {
         // Si hay error al cargar, usar proyectos de ejemplo
         this.carouselProjects = this.getExampleProjects();
         this.isLoading = false;
+        this.restartAutoSlide();
       }
     });
   }
@@ -166,29 +169,92 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private initializeCarousel(): void {
-    // Auto-slide cada 5 segundos
+    this.stopAutoSlide();
+    if (this.carouselProjects.length <= 1) {
+      return;
+    }
     this.autoSlideInterval = setInterval(() => {
-      this.nextSlide();
+      this.nextSlide(false);
     }, 5000);
   }
 
-  nextSlide(): void {
-    this.currentSlide = (this.currentSlide + 1) % this.carouselProjects.length;
+  private stopAutoSlide(): void {
+    if (this.autoSlideInterval) {
+      clearInterval(this.autoSlideInterval);
+      this.autoSlideInterval = null;
+    }
   }
 
-  previousSlide(): void {
+  /** Reinicia el temporizador tras interaccion manual (swipe, dots). */
+  private restartAutoSlide(): void {
+    this.stopAutoSlide();
+    this.initializeCarousel();
+  }
+
+  /**
+   * Inicio del gesto tactil. Guardamos coordenadas para detectar swipe horizontal
+   * en touchend y pausamos el auto-slide mientras el usuario interactua.
+   */
+  onTouchStart(event: TouchEvent): void {
+    if (event.touches.length !== 1) {
+      return;
+    }
+    this.touchStartX = event.touches[0].clientX;
+    this.touchStartY = event.touches[0].clientY;
+    this.stopAutoSlide();
+  }
+
+  /**
+   * Fin del gesto tactil. Swipe izquierda → siguiente slide; derecha → anterior.
+   * Ignoramos movimientos verticales (scroll de pagina).
+   */
+  onTouchEnd(event: TouchEvent): void {
+    if (event.changedTouches.length !== 1 || this.carouselProjects.length <= 1) {
+      this.restartAutoSlide();
+      return;
+    }
+
+    const deltaX = event.changedTouches[0].clientX - this.touchStartX;
+    const deltaY = event.changedTouches[0].clientY - this.touchStartY;
+
+    if (Math.abs(deltaX) < this.swipeThresholdPx || Math.abs(deltaX) < Math.abs(deltaY)) {
+      this.restartAutoSlide();
+      return;
+    }
+
+    if (deltaX < 0) {
+      this.nextSlide(false);
+    } else {
+      this.previousSlide(false);
+    }
+    this.restartAutoSlide();
+  }
+
+  nextSlide(restartTimer = true): void {
+    if (this.carouselProjects.length === 0) {
+      return;
+    }
+    this.currentSlide = (this.currentSlide + 1) % this.carouselProjects.length;
+    if (restartTimer) {
+      this.restartAutoSlide();
+    }
+  }
+
+  previousSlide(restartTimer = true): void {
+    if (this.carouselProjects.length === 0) {
+      return;
+    }
     this.currentSlide = this.currentSlide === 0
       ? this.carouselProjects.length - 1
       : this.currentSlide - 1;
+    if (restartTimer) {
+      this.restartAutoSlide();
+    }
   }
 
   goToSlide(index: number): void {
     this.currentSlide = index;
-    // Reiniciar el auto-slide
-    if (this.autoSlideInterval) {
-      clearInterval(this.autoSlideInterval);
-    }
-    this.initializeCarousel();
+    this.restartAutoSlide();
   }
 
   getMainImage(project: Project): string {

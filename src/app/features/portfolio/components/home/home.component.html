@@ -1,5 +1,8 @@
 <section class="projects-carousel" *ngIf="!isLoading && carouselProjects.length > 0">
-  <div class="carousel-container">
+  <div
+    class="carousel-container"
+    (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)">
     <div class="carousel-slides" [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
       <div
         class="carousel-slide"
