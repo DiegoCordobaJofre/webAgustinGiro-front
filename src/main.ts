@@ -8,13 +8,17 @@ import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { provideTranslateHttpLoader, TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app/app.routes';
 import { authInterceptor } from './app/core/interceptors/auth.interceptor';
+import { environment } from './environments/environment';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     importProvidersFrom(BrowserAnimationsModule),
-    provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' }),
+    provideTranslateHttpLoader({
+      prefix: './assets/i18n/',
+      suffix: `.json?v=${environment.i18nVersion}`
+    }),
     provideTranslateService({
       fallbackLang: 'es',
       loader: { provide: TranslateLoader, useClass: TranslateHttpLoader }
