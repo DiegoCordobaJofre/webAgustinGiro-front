@@ -1,18 +1,17 @@
 <section class="section projects-page">
   <div class="container">
-    <div class="filters" *ngIf="categories.length > 0">
-      <button 
-        class="filter-btn" 
-        [class.filter-btn--active]="selectedCategory === null"
-        (click)="filterByCategory(null)">
-        {{ 'PROJECTS_ALL' | translate }}
+    <div class="filters">
+      <button
+        class="filter-btn"
+        [class.filter-btn--active]="selectedGroup === 'OWN'"
+        (click)="filterByGroup('OWN')">
+        {{ 'PROJECTS_OWN' | translate }}
       </button>
       <button
-        *ngFor="let category of categories"
         class="filter-btn"
-        [class.filter-btn--active]="selectedCategory === category"
-        (click)="filterByCategory(category)">
-        {{ ('PROJECT_CATEGORY_' + category) | translate }}
+        [class.filter-btn--active]="selectedGroup === 'COLLABORATION'"
+        (click)="filterByGroup('COLLABORATION')">
+        {{ 'PROJECTS_COLLABORATIONS' | translate }}
       </button>
     </div>
 

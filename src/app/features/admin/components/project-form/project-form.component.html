@@ -75,25 +75,41 @@
 
           <ng-container *ngIf="isEditMode && existingImages.length > 0">
             <h4 class="images-subtitle">Imágenes actuales</h4>
+            <p class="reorder-hint">Usá ◀ ▶ para cambiar el orden en que se muestran.</p>
             <div class="images-grid">
               <div
-                *ngFor="let image of existingImages"
+                *ngFor="let image of existingImages; let i = index"
                 class="image-card"
                 [class.image-card--main]="image.isMain">
                 <div class="image-card__thumb">
                   <img [src]="image.url" [alt]="image.alt || ''">
                   <span class="image-card__badge" *ngIf="image.isMain">Principal</span>
+                  <span class="image-card__order">{{ i + 1 }}</span>
                 </div>
                 <div class="image-card__footer">
                   <span class="image-card__name" [title]="image.alt">
                     {{ image.alt || 'sin descripción' }}
                   </span>
-                  <button
-                    type="button"
-                    class="btn btn--small btn--danger"
-                    (click)="deleteExistingImage(image)">
-                    Eliminar
-                  </button>
+                  <div class="image-card__actions">
+                    <button
+                      type="button"
+                      class="btn btn--small"
+                      [disabled]="i === 0"
+                      (click)="moveImageUp(i)"
+                      title="Mover antes">◀</button>
+                    <button
+                      type="button"
+                      class="btn btn--small"
+                      [disabled]="i === existingImages.length - 1"
+                      (click)="moveImageDown(i)"
+                      title="Mover después">▶</button>
+                    <button
+                      type="button"
+                      class="btn btn--small btn--danger"
+                      (click)="deleteExistingImage(image)">
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -179,25 +195,41 @@
 
           <ng-container *ngIf="isEditMode && existingVideos.length > 0">
             <h4 class="images-subtitle">Videos actuales</h4>
+            <p class="reorder-hint">Usá ◀ ▶ para cambiar el orden en que se muestran.</p>
             <div class="images-grid">
               <div
-                *ngFor="let video of existingVideos"
+                *ngFor="let video of existingVideos; let i = index"
                 class="image-card"
                 [class.image-card--main]="video.isMain">
                 <div class="image-card__thumb image-card__thumb--video">
                   <video [src]="video.url" controls preload="metadata"></video>
                   <span class="image-card__badge" *ngIf="video.isMain">Principal</span>
+                  <span class="image-card__order">{{ i + 1 }}</span>
                 </div>
                 <div class="image-card__footer">
                   <span class="image-card__name" [title]="videoTitleLabel(video)">
                     {{ videoTitleLabel(video) || 'sin título' }}
                   </span>
-                  <button
-                    type="button"
-                    class="btn btn--small btn--danger"
-                    (click)="deleteExistingVideo(video)">
-                    Eliminar
-                  </button>
+                  <div class="image-card__actions">
+                    <button
+                      type="button"
+                      class="btn btn--small"
+                      [disabled]="i === 0"
+                      (click)="moveVideoUp(i)"
+                      title="Mover antes">◀</button>
+                    <button
+                      type="button"
+                      class="btn btn--small"
+                      [disabled]="i === existingVideos.length - 1"
+                      (click)="moveVideoDown(i)"
+                      title="Mover después">▶</button>
+                    <button
+                      type="button"
+                      class="btn btn--small btn--danger"
+                      (click)="deleteExistingVideo(video)">
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -6,6 +6,8 @@ import { ProjectService } from '../../../../core/services/project.service';
 import { Project, ProjectCategory } from '../../../../models/project.model';
 import { pickLocale } from '../../../../core/i18n/localized';
 
+type ProjectGroup = 'OWN' | 'COLLABORATION';
+
 @Component({
   selector: 'app-projects',
   standalone: true,
@@ -16,8 +18,7 @@ import { pickLocale } from '../../../../core/i18n/localized';
 export class ProjectsComponent implements OnInit {
   projects: Project[] = [];
   isLoading = true;
-  selectedCategory: ProjectCategory | null = null;
-  categories: ProjectCategory[] = [];
+  selectedGroup: ProjectGroup = 'OWN';
 
   constructor(
     private projectService: ProjectService,
@@ -32,8 +33,6 @@ export class ProjectsComponent implements OnInit {
     this.projectService.getAll().subscribe({
       next: (projects) => {
         this.projects = projects.filter(p => p.showInMenu !== false);
-        this.categories = [...new Set(this.projects.map(p => p.category))]
-            .filter((c): c is ProjectCategory => !!c);
         this.isLoading = false;
       },
       error: () => {
@@ -42,15 +41,15 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
-  filterByCategory(category: ProjectCategory | null): void {
-    this.selectedCategory = category;
+  filterByGroup(group: ProjectGroup): void {
+    this.selectedGroup = group;
   }
 
   getFilteredProjects(): Project[] {
-    if (!this.selectedCategory) {
-      return this.projects;
+    if (this.selectedGroup === 'COLLABORATION') {
+      return this.projects.filter(p => p.category === ProjectCategory.COLLABORATION);
     }
-    return this.projects.filter(p => p.category === this.selectedCategory);
+    return this.projects.filter(p => p.category !== ProjectCategory.COLLABORATION);
   }
 
   /** Titulo del proyecto en idioma activo. */

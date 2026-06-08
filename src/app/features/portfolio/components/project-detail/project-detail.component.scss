@@ -68,25 +68,30 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
   border: none;
-  width: 50px;
-  height: 50px;
-  font-size: 2rem;
+  width: 32px;
+  height: 32px;
+  font-size: 1.6rem;
+  line-height: 1;
   cursor: pointer;
-  transition: background var(--transition-base);
+  color: rgba(0, 0, 0, 0.35);
+  transition: color var(--transition-base);
   z-index: 10;
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   &:hover {
-    background: var(--color-white);
+    color: rgba(0, 0, 0, 0.75);
   }
-  
+
   &--prev {
-    left: var(--spacing-sm);
+    left: var(--spacing-xs);
   }
-  
+
   &--next {
-    right: var(--spacing-sm);
+    right: var(--spacing-xs);
   }
 }
 
@@ -127,13 +132,23 @@
 .project-detail__description {
   max-width: 800px;
   margin: 0 auto;
+  text-align: center;
 
   p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--color-text);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    color: var(--color-text-light);
     white-space: pre-line;
   }
+}
+
+.project-detail__description-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  letter-spacing: 0.05em;
 }
 
 .project-detail__videos {
@@ -175,29 +190,28 @@
 .video-thumbnail {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--color-border);
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  border: none;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-text-light);
   font-family: var(--font-primary);
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: color var(--transition-base);
 
   &:hover {
-    border-color: var(--color-primary);
+    color: var(--color-text);
   }
 
   &--active {
-    background: var(--color-primary);
-    color: var(--color-white);
-    border-color: var(--color-primary);
+    color: var(--color-text);
+    font-weight: 500;
   }
 
   &__play {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     line-height: 1;
   }
 

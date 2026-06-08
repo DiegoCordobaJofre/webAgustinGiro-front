@@ -1,0 +1,89 @@
+<div class="carousel-admin">
+  <div class="container">
+    <div class="carousel-admin__header">
+      <div>
+        <h1>Gestionar Carrusel</h1>
+        <p class="carousel-admin__subtitle">
+          Elige qué proyectos aparecen en la página principal, su orden, su imagen y si se ven en blanco y negro.
+        </p>
+      </div>
+      <a routerLink="/admin/dashboard" class="btn">← Volver al panel</a>
+    </div>
+
+    <!-- ============== ALTA ============== -->
+    <div class="carousel-admin__new">
+      <h3>Agregar al carrusel</h3>
+      <div class="new-form">
+        <div class="form-group">
+          <label for="project">Proyecto</label>
+          <select id="project" class="form-input" [(ngModel)]="newProjectId">
+            <option [ngValue]="null" disabled>Elige un proyecto…</option>
+            <option *ngFor="let project of projects" [ngValue]="project.id">
+              {{ titleFor(project) }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Imagen del carrusel</label>
+          <label class="file-picker">
+            <input type="file" [accept]="imageAcceptAttr" (change)="onFileSelected($event)" hidden>
+            <span *ngIf="!newFile">Seleccionar imagen…</span>
+            <span *ngIf="newFile">{{ newFile.name }}</span>
+          </label>
+        </div>
+
+        <div class="form-group form-group--preview" *ngIf="newFilePreview">
+          <img [src]="newFilePreview" alt="preview" class="new-preview" [class.new-preview--gray]="newGrayscale">
+        </div>
+
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="newGrayscale">
+          <span>Mostrar en blanco y negro</span>
+        </label>
+
+        <button class="btn btn--primary" (click)="createItem()" [disabled]="creating">
+          {{ creating ? 'Agregando…' : 'Agregar al carrusel' }}
+        </button>
+      </div>
+      <p class="form-error" *ngIf="formError">{{ formError }}</p>
+    </div>
+
+    <!-- ============== LISTA ============== -->
+    <div class="carousel-admin__list" *ngIf="!isLoading; else loading">
+      <p class="empty" *ngIf="items.length === 0">
+        El carrusel está vacío. Mientras tanto, la página principal muestra los proyectos marcados como destacados.
+      </p>
+
+      <div class="carousel-row" *ngFor="let item of items; let i = index">
+        <div class="carousel-row__order">
+          <button class="order-btn" (click)="moveUp(i)" [disabled]="i === 0" title="Subir">▲</button>
+          <span class="order-num">{{ i + 1 }}</span>
+          <button class="order-btn" (click)="moveDown(i)" [disabled]="i === items.length - 1" title="Bajar">▼</button>
+        </div>
+
+        <div class="carousel-row__thumb">
+          <img [src]="item.imageUrl" [alt]="titleFor(item)" [class.is-gray]="item.grayscale">
+        </div>
+
+        <div class="carousel-row__info">
+          <strong>{{ titleFor(item) }}</strong>
+          <a [routerLink]="['/proyectos', item.projectId]" target="_blank" class="link-detail">
+            Ver proyecto →
+          </a>
+        </div>
+
+        <label class="checkbox-label carousel-row__gray">
+          <input type="checkbox" [checked]="item.grayscale" (change)="toggleGrayscale(item)">
+          <span>Blanco y negro</span>
+        </label>
+
+        <button class="btn btn--small btn--danger" (click)="deleteItem(item)">Quitar</button>
+      </div>
+    </div>
+
+    <ng-template #loading>
+      <div class="loading">Cargando…</div>
+    </ng-template>
+  </div>
+</div>

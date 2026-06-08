@@ -43,6 +43,11 @@ export const routes: Routes = [
         path: 'projects/:id/edit',
         loadComponent: () => import('./features/admin/components/project-form/project-form.component').then(m => m.ProjectFormComponent),
         canActivate: [authGuard]
+      },
+      {
+        path: 'carrusel',
+        loadComponent: () => import('./features/admin/components/carousel-admin/carousel-admin.component').then(m => m.CarouselAdminComponent),
+        canActivate: [authGuard]
       }
     ]
   },

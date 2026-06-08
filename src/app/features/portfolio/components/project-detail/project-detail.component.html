@@ -46,12 +46,13 @@
       </div>
     </div>
 
-    <div class="project-detail__description">
+    <div class="project-detail__description" *ngIf="projectDescription">
+      <h2 class="project-detail__description-title">{{ 'PROJECT_DETAIL_DESCRIPTION' | translate }}</h2>
       <p>{{ projectDescription }}</p>
     </div>
 
     <div class="project-detail__videos" *ngIf="project.videos && project.videos.length > 0">
-      <h2 class="project-detail__videos-title">{{ 'PROJECT_DETAIL_VIDEOS' | translate }}</h2>
+      <h2 class="project-detail__videos-title">{{ 'PROJECT_DETAIL_VIDEO' | translate }}</h2>
 
       <div class="video-main">
         <video

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
+import { CarouselService } from '../../../../core/services/carousel.service';
 import { Project, ProjectCategory } from '../../../../models/project.model';
 import { Localized, pickLocale } from '../../../../core/i18n/localized';
 
@@ -18,6 +19,8 @@ interface CarouselProject {
    */
   status: string;
   image: string;
+  /** Si es true, la imagen se muestra en blanco y negro en el carrusel. */
+  grayscale: boolean;
 }
 
 @Component({
@@ -36,11 +39,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private projectService: ProjectService,
+    private carouselService: CarouselService,
     private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.loadFeaturedProjects();
+    this.loadCarousel();
     this.initializeCarousel();
   }
 
@@ -48,6 +52,33 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.autoSlideInterval) {
       clearInterval(this.autoSlideInterval);
     }
+  }
+
+  /**
+   * Carga el carrusel configurable desde el backend. Si no hay items configurados,
+   * cae a los proyectos marcados como destacados (featured) y, en ultimo caso, a
+   * los proyectos de ejemplo.
+   */
+  private loadCarousel(): void {
+    this.carouselService.getAll().subscribe({
+      next: (items) => {
+        if (items.length > 0) {
+          this.carouselProjects = items.map((item) => ({
+            id: item.projectId,
+            title: item.title ?? {},
+            subtitle: item.subtitle ?? {},
+            category: item.category,
+            status: item.status || '',
+            image: item.imageUrl,
+            grayscale: !!item.grayscale
+          }));
+          this.isLoading = false;
+        } else {
+          this.loadFeaturedProjects();
+        }
+      },
+      error: () => this.loadFeaturedProjects()
+    });
   }
 
   private loadFeaturedProjects(): void {
@@ -64,7 +95,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             subtitle: p.subtitle ?? {},
             category: p.category,
             status: (p.status as string) || '',
-            image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image
+            image: this.getMainImage(p) || this.getExampleProjects()[index % 3].image,
+            grayscale: false
           }));
         } else {
           this.carouselProjects = this.getExampleProjects();
@@ -87,7 +119,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         subtitle: { es: 'Villa moderna en Aljezur' },
         category: ProjectCategory.RESIDENTIAL,
         status: 'IN_EXECUTION',
-        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-1.jpg',
+        grayscale: false
       },
       {
         id: 2,
@@ -95,7 +128,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         subtitle: { es: 'Casa tradicional portuguesa renovada' },
         category: ProjectCategory.RESIDENTIAL,
         status: 'COMPLETED',
-        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-2.jpg',
+        grayscale: false
       },
       {
         id: 3,
@@ -103,7 +137,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         subtitle: { es: 'Residencial integrado al paisaje del sur de Portugal' },
         category: ProjectCategory.RESIDENTIAL,
         status: 'IN_EXECUTION',
-        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-5.jpg'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/image-5.jpg',
+        grayscale: false
       },
       {
         id: 4,
@@ -111,7 +146,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         subtitle: { es: 'Casa tradicional italiana' },
         category: ProjectCategory.RESIDENTIAL,
         status: 'IN_EXECUTION',
-        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/cocina-ostra-1.jpg'
+        image: 'https://raw.githubusercontent.com/DiegoCordobaJofre/webAgustinGiro-front/main/src/assets/images/projects/cocina-ostra-1.jpg',
+        grayscale: false
       }
     ];
   }

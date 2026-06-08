@@ -6,6 +6,7 @@
         *ngFor="let project of carouselProjects">
         <img
           class="carousel-slide__image"
+          [class.carousel-slide__image--grayscale]="project.grayscale"
           [src]="project.image"
           [alt]="titleFor(project)"
           loading="lazy">
@@ -18,6 +19,7 @@
               <span class="carousel-slide__category" *ngIf="project.category">
                 {{ ('PROJECT_CATEGORY_' + project.category) | translate }}
               </span>
+              <span class="carousel-slide__separator" *ngIf="project.category && project.status">|</span>
               <span class="carousel-slide__status" *ngIf="project.status">
                 {{ ('STATUS_' + project.status) | translate }}
               </span>
@@ -26,14 +28,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Navigation arrows -->
-    <button class="carousel-nav carousel-nav--prev" (click)="previousSlide()" [attr.aria-label]="'HOME_PREV_PROJECT' | translate">
-      ‹
-    </button>
-    <button class="carousel-nav carousel-nav--next" (click)="nextSlide()" [attr.aria-label]="'HOME_NEXT_PROJECT' | translate">
-      ›
-    </button>
 
     <!-- Dots indicator -->
     <div class="carousel-dots">

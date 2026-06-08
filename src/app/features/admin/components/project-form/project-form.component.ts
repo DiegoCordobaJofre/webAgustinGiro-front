@@ -293,6 +293,34 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
     this.pendingImageUploads.forEach((p, i) => (p.isMain = i === index));
   }
 
+  moveImageUp(index: number): void {
+    if (index <= 0) return;
+    this.reorderImagesSwap(index, index - 1);
+  }
+
+  moveImageDown(index: number): void {
+    if (index >= this.existingImages.length - 1) return;
+    this.reorderImagesSwap(index, index + 1);
+  }
+
+  private reorderImagesSwap(a: number, b: number): void {
+    if (!this.projectId) return;
+    const reordered = [...this.existingImages];
+    [reordered[a], reordered[b]] = [reordered[b], reordered[a]];
+    this.existingImages = reordered;
+    const orderedIds = reordered
+      .map((img) => img.id)
+      .filter((id): id is number => id != null);
+    this.projectService.reorderImages(this.projectId, orderedIds).subscribe({
+      next: (images) => {
+        this.existingImages = [...images].sort(
+          (x, y) => (x.order ?? 0) - (y.order ?? 0)
+        );
+      },
+      error: () => alert('No se pudo guardar el nuevo orden de imágenes')
+    });
+  }
+
   deleteExistingImage(image: ProjectImage): void {
     if (!this.projectId || image.id == null) return;
     if (!confirm('¿Eliminar esta imagen?')) return;
@@ -420,6 +448,34 @@ export class ProjectFormComponent implements OnInit, OnDestroy {
 
   setPendingVideoMain(index: number): void {
     this.pendingVideoUploads.forEach((p, i) => (p.isMain = i === index));
+  }
+
+  moveVideoUp(index: number): void {
+    if (index <= 0) return;
+    this.reorderVideosSwap(index, index - 1);
+  }
+
+  moveVideoDown(index: number): void {
+    if (index >= this.existingVideos.length - 1) return;
+    this.reorderVideosSwap(index, index + 1);
+  }
+
+  private reorderVideosSwap(a: number, b: number): void {
+    if (!this.projectId) return;
+    const reordered = [...this.existingVideos];
+    [reordered[a], reordered[b]] = [reordered[b], reordered[a]];
+    this.existingVideos = reordered;
+    const orderedIds = reordered
+      .map((v) => v.id)
+      .filter((id): id is number => id != null);
+    this.projectService.reorderVideos(this.projectId, orderedIds).subscribe({
+      next: (videos) => {
+        this.existingVideos = [...videos].sort(
+          (x, y) => (x.order ?? 0) - (y.order ?? 0)
+        );
+      },
+      error: () => alert('No se pudo guardar el nuevo orden de videos')
+    });
   }
 
   deleteExistingVideo(video: ProjectVideo): void {

@@ -19,6 +19,22 @@ export interface Project {
   updatedAt?: Date;
 }
 
+/**
+ * Item del carrusel configurable de la pagina principal. Apunta a un proyecto
+ * existente (projectId) y trae sus datos para mostrarlos sin otra llamada.
+ */
+export interface CarouselItem {
+  id: number;
+  projectId: number;
+  imageUrl: string;
+  grayscale: boolean;
+  order: number;
+  title: Localized;
+  subtitle?: Localized;
+  category: ProjectCategory | null;
+  status: string;
+}
+
 export interface ProjectImage {
   id?: number;
   url: string;

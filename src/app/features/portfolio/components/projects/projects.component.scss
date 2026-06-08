@@ -19,26 +19,24 @@
 }
 
 .filter-btn {
-  padding: 0.5rem 1.5rem;
-  border: 1px solid var(--color-border);
+  padding: 0.25rem 0.5rem;
+  border: none;
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-text-light);
   font-family: var(--font-primary);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   cursor: pointer;
-  transition: all var(--transition-base);
-  
+  transition: color var(--transition-base);
+
   &:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    color: var(--color-text);
   }
-  
+
   &--active {
-    background: var(--color-primary);
-    color: var(--color-white);
-    border-color: var(--color-primary);
+    color: var(--color-text);
   }
 }
 
@@ -77,18 +75,21 @@
   
   &__content {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
   }
-  
+
   &__title {
-    font-size: 1.1rem;
+    font-size: 0.75rem;
     font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text);
     margin: 0;
-    flex: 1;
   }
-  
+
   &__status {
     font-size: 0.75rem;
     color: var(--color-text-light);

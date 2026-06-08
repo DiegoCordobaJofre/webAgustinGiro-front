@@ -67,6 +67,22 @@ export class ProjectService {
     );
   }
 
+  /** Reordena las imagenes del proyecto. `orderedIds` define el nuevo orden. */
+  reorderImages(projectId: number, orderedIds: number[]): Observable<ProjectImage[]> {
+    return this.http.put<ProjectImage[]>(
+      `${this.apiUrl}/${projectId}/images/reorder`,
+      { orderedIds }
+    );
+  }
+
+  /** Reordena los videos del proyecto. `orderedIds` define el nuevo orden. */
+  reorderVideos(projectId: number, orderedIds: number[]): Observable<ProjectVideo[]> {
+    return this.http.put<ProjectVideo[]>(
+      `${this.apiUrl}/${projectId}/videos/reorder`,
+      { orderedIds }
+    );
+  }
+
   /**
    * Sube un video asociado a un proyecto. El backend lo guarda en Cloudflare R2
    * y persiste el metadata. Devuelve el video creado (con id y url publica de R2).
