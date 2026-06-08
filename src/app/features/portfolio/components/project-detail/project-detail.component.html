@@ -3,15 +3,18 @@
     <a routerLink="/proyectos" class="back-link">← {{ 'PROJECT_DETAIL_BACK' | translate }}</a>
 
     <div class="project-detail__header">
-      <h1 class="project-detail__title">{{ projectTitle }}</h1>
-      <p class="project-detail__subtitle" *ngIf="projectSubtitle">{{ projectSubtitle }}</p>
-      <div class="project-detail__meta">
-        <span class="project-detail__category" *ngIf="project.category">
-          {{ ('PROJECT_CATEGORY_' + project.category) | translate }}
-        </span>
-        <span class="project-detail__status" *ngIf="project.status">
-          {{ ('STATUS_' + project.status) | translate }}
-        </span>
+      <div class="project-detail__info">
+        <h1 class="project-detail__title">{{ projectTitle }}</h1>
+        <p class="project-detail__subtitle" *ngIf="projectSubtitle">{{ projectSubtitle }}</p>
+        <div class="project-detail__meta">
+          <span class="project-detail__category" *ngIf="project.category">
+            {{ ('PROJECT_CATEGORY_' + project.category) | translate }}
+          </span>
+          <span class="project-detail__separator" *ngIf="project.category && project.status">|</span>
+          <span class="project-detail__status" *ngIf="project.status">
+            {{ ('STATUS_' + project.status) | translate }}
+          </span>
+        </div>
       </div>
     </div>
 

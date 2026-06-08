@@ -19,27 +19,53 @@
   margin-bottom: var(--spacing-xl);
 }
 
+.project-detail__info {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+/* Misma tipografia que el carrusel del home (carousel-slide__*) pero sobre fondo claro. */
 .project-detail__title {
-  font-size: 2.5rem;
+  font-size: 1rem;
   font-weight: 300;
-  margin-bottom: var(--spacing-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0 0 0.35rem;
+  color: var(--color-text);
 }
 
 .project-detail__subtitle {
-  font-size: 1.05rem;
+  font-size: 0.8rem;
   font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 0.35rem;
+  max-width: 520px;
   color: var(--color-text-light);
-  margin-bottom: var(--spacing-sm);
-  max-width: 720px;
 }
 
 .project-detail__meta {
   display: flex;
-  gap: var(--spacing-md);
-  font-size: 0.875rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 300;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--color-text-light);
+}
+
+.project-detail__separator {
+  display: inline-block;
+  line-height: 1;
+  color: var(--color-text-light);
+  opacity: 0.6;
 }
 
 .project-detail__gallery {
@@ -256,11 +282,15 @@
   }
 
   .project-detail__title {
-    font-size: 1.8rem;
+    font-size: 0.95rem;
   }
 
   .project-detail__subtitle {
-    font-size: 0.95rem;
+    font-size: 0.75rem;
+  }
+
+  .project-detail__meta {
+    font-size: 0.75rem;
   }
 
   .video-main {
