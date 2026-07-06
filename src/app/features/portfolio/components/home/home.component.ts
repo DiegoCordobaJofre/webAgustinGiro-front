@@ -257,6 +257,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.restartAutoSlide();
   }
 
+  onArrowClick(event: Event, direction: 'prev' | 'next'): void {
+    event.stopPropagation();
+    if (direction === 'prev') {
+      this.previousSlide();
+    } else {
+      this.nextSlide();
+    }
+  }
+
   getMainImage(project: Project): string {
     const mainImage = project.images?.find(img => img.isMain);
     return mainImage?.url || project.images?.[0]?.url || '';
