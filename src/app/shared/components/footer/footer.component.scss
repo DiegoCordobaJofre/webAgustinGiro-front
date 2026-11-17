@@ -99,5 +99,6 @@
 /* Reserve room so the sig never overlaps the social icons when the container reaches the edge */
 @media (min-width: 861px) and (max-width: 1640px) { .footer__container { padding-right: 210px; } }
 @media (max-width: 860px) {
-  .footer .sig { transform: none; display: flex; width: fit-content; margin: 16px clamp(12px, 2vw, 28px) 0 auto; }
+  /* Same row as the social icons (32px tall), right-aligned, instead of an extra row below */
+  .footer .sig { position: absolute; top: auto; bottom: calc(var(--spacing-sm) + 4px); transform: none; margin: 0; }
 }
