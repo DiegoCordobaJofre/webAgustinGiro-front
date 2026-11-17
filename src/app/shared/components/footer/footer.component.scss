@@ -93,7 +93,11 @@
 .sig:hover .sig__mark { background: #1e1b2e; border-color: #1e1b2e; color: #f7f2ea; }
 .sig:hover .sig__mark b { color: #d5c8ff; }
 @media (max-width: 860px) { .sig { position: static; margin-top: 16px; } }
-.footer .sig { margin: 0 0 0 .5rem; }
 
-/* Thin single-row footer: bottom:44px would float above it, so sit inline in the row */
-.footer .sig { position: static; }
+/* Thin single-row footer: pin to the viewport's right edge, vertically centred */
+.footer .sig { top: 50%; bottom: auto; transform: translateY(-50%); }
+/* Reserve room so the sig never overlaps the social icons when the container reaches the edge */
+@media (min-width: 861px) and (max-width: 1640px) { .footer__container { padding-right: 210px; } }
+@media (max-width: 860px) {
+  .footer .sig { transform: none; display: flex; width: fit-content; margin: 16px clamp(12px, 2vw, 28px) 0 auto; }
+}
