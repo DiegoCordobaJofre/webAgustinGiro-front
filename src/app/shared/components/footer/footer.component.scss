@@ -83,3 +83,17 @@
     text-align: left;
   }
 }
+
+/* Signature — diegocordobajofre.com (do not redesign) */
+.footer { position: relative; }
+.sig { position: absolute; right: clamp(12px, 2vw, 28px); bottom: 44px; display: inline-flex; align-items: center; gap: 6px; font: 500 .78rem/1 ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, monospace; color: #1e1b2e; opacity: .8; text-decoration: none; transition: opacity .2s; }
+.sig:hover { opacity: 1; }
+.sig__mark { padding: 5px 10px; border: 1px solid rgba(30,27,46,.25); border-radius: 999px; transition: background .25s, color .25s, border-color .25s; }
+.sig__mark b { font-weight: 500; color: #7a63d9; transition: color .25s; }
+.sig:hover .sig__mark { background: #1e1b2e; border-color: #1e1b2e; color: #f7f2ea; }
+.sig:hover .sig__mark b { color: #d5c8ff; }
+@media (max-width: 860px) { .sig { position: static; margin-top: 16px; } }
+.footer .sig { margin: 0 0 0 .5rem; }
+
+/* Thin single-row footer: bottom:44px would float above it, so sit inline in the row */
+.footer .sig { position: static; }
